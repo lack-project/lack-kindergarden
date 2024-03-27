@@ -1,0 +1,14 @@
+---
+model: gpt-4
+---
+
+Name: {{ name }}
+Age: {{ age }}
+
+
+---
+model: b
+---
+
+Name2: {{ name }}
+Age2: {{ age }}
