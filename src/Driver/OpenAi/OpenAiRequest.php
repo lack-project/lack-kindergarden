@@ -1,8 +1,8 @@
 <?php
 
-namespace Lack\KiKi\Driver\OpenAi;
+namespace Lack\Kindergarden\Driver\OpenAi;
 
-class ChatGPTRequest
+class OpenAiRequest
 {
     private string $apiKey;
     private string $model;

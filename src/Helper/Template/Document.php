@@ -1,6 +1,6 @@
 <?php
 
-namespace Lack\KiKi\Helper\Template;
+namespace Lack\Kindergarden\Helper\Template;
 
 class Document
 {

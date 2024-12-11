@@ -1,6 +1,6 @@
 <?php
 
-namespace Lack\KiKi;
+namespace Lack\Kindergarden;
 
 class KiKiFacet
 {

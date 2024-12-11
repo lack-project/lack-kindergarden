@@ -1,6 +1,6 @@
 <?php
 
-namespace Lack\KiKi\Chat;
+namespace Lack\Kindergarden\Chat;
 
 class ChatImageMessage
 {

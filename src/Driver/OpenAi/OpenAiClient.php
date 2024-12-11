@@ -1,8 +1,8 @@
 <?php
 
-namespace Lack\KiKi\Driver\OpenAi;
+namespace Lack\Kindergarden\Driver\OpenAi;
 
-class ChatGPTClient
+class OpenAiClient
 {
     private array $requests = [];
     private $multiHandle;
@@ -12,7 +12,7 @@ class ChatGPTClient
         $this->multiHandle = curl_multi_init();
     }
 
-    public function addRequest(ChatGPTRequest $request): void
+    public function addRequest(OpenAiRequest $request): void
     {
         $request->prepareCurlHandle();
         $ch = $request->getCurlHandle();
