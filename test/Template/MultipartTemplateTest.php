@@ -1,8 +1,8 @@
 <?php
 
-namespace Lack\Test\Kiki\Template;
+namespace Lack\Test\Kindergarden\Template;
 
-use Lack\KiKi\Helper\Template\MultipartTemplate;
+use Lack\Kindergarden\Helper\Template\MultipartTemplate;
 use PHPUnit\Framework\TestCase;
 
 class MultipartTemplateTest extends TestCase

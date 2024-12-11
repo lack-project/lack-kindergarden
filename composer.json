@@ -19,7 +19,8 @@
     },
 
     "require-dev": {
-        "phore/tester": "*"
+        "phore/tester": "*",
+        "lack/keystore": "*"
     },
     "autoload": {
         "psr-4": {

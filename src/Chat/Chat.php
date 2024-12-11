@@ -5,13 +5,47 @@ namespace Lack\Kindergarden\Chat;
 class Chat
 {
 
-    /**
-     * @var array ChatMessage[]|ChatImageMessage[]
-     */
-    private $mesages = [];
-    public function addMessage(ChatMessage $message)
+    public function __construct(
+        /**
+         * @var ChatMessage[]|ChatImageMessage[]
+         */
+        private array $messages = []
+    )
     {
-        $this->mesages[] = $message;
+
     }
+
+
+
+
+    private ChatResponseFormat|null $responseFormat = null;
+
+
+    public function addMessage(ChatMessage $message) : self
+    {
+        $this->messages[] = $message;
+        return $this;
+    }
+
+    /**
+     * @return ChatImageMessage[]|ChatMessage[]
+     */
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
+
+    public function setResponseFormat(ChatResponseFormat|null $responseFormat) : self
+    {
+        $this->responseFormat = $responseFormat;
+        return $this;
+    }
+
+    public function getResponseFormat(): ChatResponseFormat|null
+    {
+        return $this->responseFormat;
+    }
+
 
 }

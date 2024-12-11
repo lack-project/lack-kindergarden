@@ -2,41 +2,38 @@
 
 namespace Lack\Kindergarden\Driver\OpenAi;
 
-class OpenAiRequest
+use Lack\Kindergarden\Chat\Chat;
+use Lack\Kindergarden\ChatRequestDriver;
+use Lack\Kindergarden\ChatSerializer;
+
+class OpenAiRequest implements ChatRequestDriver
 {
     private string $apiKey;
-    private string $model;
-    private array $messages = [];
-    private int $maxTokens = 150;
-    private float $temperature = 1.0;
-    private bool $stream = false;
     private ?\Closure $callback = null;
     private ?string $response = null;
     private ?bool $completedNaturally = null;
-    private $curlHandle = null;
+    private \CurlHandle|null $curlHandle = null;
     private array $headers = [];
     private array $options = [];
 
-    public function __construct(string $apiKey, string $model = 'gpt-4')
+
+    private ChatSerializer $chatSerializer;
+
+    private Chat $chat;
+
+    public function __construct(string $apiKey, string $model)
     {
         $this->apiKey = $apiKey;
-        $this->model = $model;
+        $this->chatSerializer = new OpenAiChatSerializer();
+        $this->chatSerializer->model = $model;
     }
 
-    public function addMessage(string $role, string $content): void
+    public function setChat(Chat $chat): ChatRequestDriver
     {
-        $this->messages[] = ['role' => $role, 'content' => $content];
+        $this->chat = $chat;
+        return $this;
     }
 
-    public function setMaxTokens(int $maxTokens): void
-    {
-        $this->maxTokens = $maxTokens;
-    }
-
-    public function setTemperature(float $temperature): void
-    {
-        $this->temperature = $temperature;
-    }
 
     public function enableStreaming(?callable $callback = null): void
     {
@@ -50,31 +47,38 @@ class OpenAiRequest
         $this->callback = null;
     }
 
+    /**
+     * This method is used interanally. You sohuld not call it directly.
+     *
+     * Call execute() method instead. or use the Client to schedule multiple requests.
+     *
+     * @return void
+     * @internal
+     */
     public function prepareCurlHandle(): void
     {
         $this->curlHandle = curl_init('https://api.openai.com/v1/chat/completions');
 
-        $payload = [
-            'model' => $this->model,
-            'messages' => $this->messages,
-            'max_tokens' => $this->maxTokens,
-            'temperature' => $this->temperature,
-            'stream' => $this->stream,
-        ];
+        $payload = $this->chatSerializer->serialize($this->chat, $this);
 
         $this->headers = [
             'Content-Type: application/json',
             'Authorization: Bearer ' . $this->apiKey,
         ];
 
+        $payload = json_encode($payload);
+        if ( ! $payload) {
+            throw new \Exception('Failed to json_encode chat payload');
+        }
+
         $this->options = [
-            CURLOPT_RETURNTRANSFER => !$this->stream,
+            CURLOPT_RETURNTRANSFER => !$this->chatSerializer->stream,
             CURLOPT_HTTPHEADER => $this->headers,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_POSTFIELDS => $payload
         ];
 
-        if ($this->stream && $this->callback) {
+        if ($this->chatSerializer->stream && $this->callback) {
             $this->options[CURLOPT_WRITEFUNCTION] = function ($ch, $data) {
                 $lines = explode("\n", $data);
                 foreach ($lines as $line) {
@@ -97,6 +101,15 @@ class OpenAiRequest
         curl_setopt_array($this->curlHandle, $this->options);
     }
 
+    /**
+     * This method is used interanally. You sohuld not call it directly.
+     *
+     * Call execute() method instead. or use the Client to schedule multiple requests.
+     *
+     * @return void
+     * @internal
+     * @throws \Exception
+     */
     public function processCurlResult(): void
     {
         if (curl_errno($this->curlHandle)) {
@@ -110,7 +123,7 @@ class OpenAiRequest
             throw new \Exception('HTTP Error: ' . $httpStatus . ' - ' . $result);
         }
 
-        if (!$this->stream) {
+        if (!$this->chatSerializer->stream) {
             $result = curl_multi_getcontent($this->curlHandle) ?: curl_exec($this->curlHandle);
             $decoded = json_decode($result, true);
             if (isset($decoded['choices'][0]['finish_reason'])) {

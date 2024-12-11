@@ -7,6 +7,6 @@ use Lack\Kindergarden\Chat\Chat;
 interface ChatSerializer
 {
 
-    public function serialize(Chat $message): string;
+    public function serialize(Chat $chat, ChatRequestDriver $chatRequestDriver): array;
 
 }
