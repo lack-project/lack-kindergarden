@@ -5,11 +5,32 @@ namespace Lack\Kindergarden\Cog\Type;
 class T_InputFile
 {
 
-    public string $filename;
+    public function __construct (
 
-    public string|null $content;
+        /**
+         * The filename of the file
+         */
+        public string $filename,
+
+        /**
+         * The text/plain content of the file as it is
+         *
+         * If it is null, assume that the file exists in the filesystem but the content is not provided.
+         *
+         * @var string|null
+         */
+        public string|null $content,
 
 
-    public string|null $instructions;
+        /**
+         * Additional instructions for interpreting the file (if provided)
+         *
+         * @var string|null
+         */
+        public string|null $instructions
+
+    ) {}
+
+
 
 }

@@ -14,14 +14,14 @@ class OpenAiClientTest extends \PHPUnit\Framework\TestCase
 
 
     public function testBaseRequest() {
-        $request = new OpenAiRequest(KeyStore::Get()->getAccessKey('open_ai'), "gpt-4o");
+        $request = new OpenAiRequest(KeyStore::Get()->getAccessKey('open_ai'), "o1-preview");
 
         $chat = new Chat();
-        $chat->addMessage(new ChatMessage(ChatMessageRoleEnum::SYSTEM, 'Say Hello'));
+        $chat->addMessage(new ChatMessage(ChatMessageRoleEnum::USER, 'Say: Hello World'));
 
         $request->setChat($chat);
         $request->execute();
-        echo $request->getResponse();
+        echo "Response" . $request->getResponse();
     }
 
 }

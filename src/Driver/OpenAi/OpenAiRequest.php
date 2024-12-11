@@ -123,9 +123,10 @@ class OpenAiRequest implements ChatRequestDriver
             throw new \Exception('HTTP Error: ' . $httpStatus . ' - ' . $result);
         }
 
-        if (!$this->chatSerializer->stream) {
+        if ( ! $this->chatSerializer->stream) {
             $result = curl_multi_getcontent($this->curlHandle) ?: curl_exec($this->curlHandle);
             $decoded = json_decode($result, true);
+            print_r ($decoded);
             if (isset($decoded['choices'][0]['finish_reason'])) {
                 $this->completedNaturally = $decoded['choices'][0]['finish_reason'] === 'stop';
             }

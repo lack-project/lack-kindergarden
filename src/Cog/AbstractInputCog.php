@@ -2,7 +2,9 @@
 
 namespace Lack\Kindergarden\Cog;
 
-abstract class AbstractInputCog
+use Lack\Kindergarden\InputCog;
+
+abstract class AbstractInputCog implements InputCog
 {
 
     public function __construct(

@@ -47,5 +47,40 @@ class Chat
         return $this->responseFormat;
     }
 
+    /**
+     * Get the first system message (first message). If not existing will create a empty one
+     *
+     * @return ChatMessage
+     */
+    public function getFirstSystemMessage() : ChatMessage
+    {
+        foreach ($this->messages as $message) {
+            if ($message instanceof ChatMessage && $message->role === ChatMessageRoleEnum::SYSTEM) {
+                return $message;
+            }
+
+        }
+        // Create a empty Message
+        $message = new ChatMessage(ChatMessageRoleEnum::SYSTEM, "");
+        // Insert it on top of the messages
+        array_unshift($this->messages, $message);
+        return $message;
+    }
+
+    public function getFirstUserMessage() : ChatMessage
+    {
+        foreach ($this->messages as $message) {
+            if ($message instanceof ChatMessage && $message->role === ChatMessageRoleEnum::USER) {
+                return $message;
+            }
+
+        }
+        // Create a empty Message
+        $message = new ChatMessage(ChatMessageRoleEnum::USER, "");
+        // Insert it on top of the messages
+        array_unshift($this->messages, $message);
+        return $message;
+    }
+
 
 }
