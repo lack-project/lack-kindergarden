@@ -21,6 +21,7 @@ class OpenAiClientTest extends \PHPUnit\Framework\TestCase
 
         $request->setChat($chat);
         $request->execute();
+        echo $request->getResponse();
     }
 
 }
