@@ -14,4 +14,14 @@ class ChatMessage
     }
 
 
+    public function prepend(string $message): void
+    {
+        $this->message = $message . "\n" . $this->message;
+    }
+
+    public function append(string $message): void
+    {
+        $this->message = $this->message . "\n" . $message;
+    }
+
 }
