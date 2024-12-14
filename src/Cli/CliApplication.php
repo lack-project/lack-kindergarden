@@ -5,6 +5,8 @@ namespace Lack\Kindergarden\Cli;
 use Lack\Kindergarden\Cli\Attributes\CliArgument;
 use Lack\Kindergarden\Cli\Attributes\CliCommand;
 use Lack\Kindergarden\Cli\Attributes\CliParamDescription;
+use Lack\Kindergarden\Cli\Console\ConsoleColor;
+use Lack\Kindergarden\Cli\Console\Verbosity;
 use Lack\Kindergarden\Cli\Exception\CliException;
 
 class CliApplication {
@@ -12,11 +14,14 @@ class CliApplication {
     private CliGroupNode $root;
     private bool $debug = false;
 
+    public Console $console;
+
     public readonly string $scriptName;
 
     private function __construct(string $name = 'app', string $description = '')
     {
         $this->root = new CliGroupNode($this, null, $description);
+        $this->console = new Console();
     }
 
     public static function getInstance(string $name = 'app', string $description = ''): self
@@ -38,8 +43,14 @@ class CliApplication {
             $class::__cli($this->root);
         }
 
+
         $ref = new \ReflectionClass($class);
         $instance = $ref->newInstance();
+
+        if (method_exists($instance, '__set_console')) {
+            $instance->__set_console($this->console);
+        }
+
 
         foreach ($ref->getMethods() as $method) {
             $cmdAttrs = $method->getAttributes(CliCommand::class);
@@ -156,6 +167,7 @@ class CliApplication {
             $this->debug = !empty($globalParsed['opts']['debug']);
             $interactive = !empty($globalParsed['opts']['interactive']);
             $completion = !empty($globalParsed['opts']['complete']);
+            $verbosity = $globalParsed['opts']['verbosity'] ?? Verbosity::INFO;
 
             if ($interactive) {
                 $this->setInteractive($this->root);
@@ -165,55 +177,61 @@ class CliApplication {
                 $this->printCompletion($this->root, []);
                 exit(0);
             }
+            $this->console->setVerbosity($verbosity);
 
             $this->root->run($argv, [], $this->debug);
         } catch (CliException $e) {
-            $this->printError($e->getMessage());
 
+            $this->console->renderException($e);
             exit(1);
         }
     }
 
     private function parseGlobalOptions(array &$argv): array
     {
-        $args = $argv;
         $opts = [];
         $stop = false;
 
-        while ($args && !$stop) {
-            $current = $args[0];
+        while ($argv && !$stop) {
+            $current = $argv[0];
+
             if ($current === '--debug' || $current === '-d') {
                 $opts['debug'] = true;
-                array_shift($args);
+                array_shift($argv);
             } elseif ($current === '--interactive' || $current === '-i') {
                 $opts['interactive'] = true;
-                array_shift($args);
+                array_shift($argv);
             } elseif ($current === '--complete') {
                 $opts['complete'] = true;
-                array_shift($args);
+                array_shift($argv);
+            } elseif (str_starts_with($current, '-v')) {
+                $verbosity = 3;
+                if (strlen($current) == 3) {
+                    $verbosity = (int) substr($current, 2);
+                }
+                $opts['verbosity'] = Verbosity::from($verbosity);
+                array_shift($argv);
             } else {
                 $stop = true;
             }
         }
 
-        return ['args' => $args, 'opts' => $opts];
+        return ['opts' => $opts];
     }
 
 
     private function printGobalHelp(): void
     {
-        echo "Usage: {$this->scriptName} [options] <command> [arguments]\n\n";
+        $this->console->writeln("Usage: {$this->scriptName} [options] <command> [arguments]\n", ConsoleColor::BLUE, true);
         echo "Options:\n";
-        echo "  --debug, -d      Enable debug mode\n";
+        echo "   -v0-5              Set verbosity level\n";
+        echo "  --debug, -d         Enable debug mode\n";
         echo "  --interactive, -i      Enable interactive mode\n";
-        echo "  --complete      Print completion suggestions\n";
+        echo "  --complete          Print completion suggestions\n";
         echo "\n";
     }
 
-    private function printError(string $message): void
-    {
-        echo "\033[31mError:\033[0m $message\n";
-    }
+
 
     private function setInteractive(CliGroupNode $node): void
     {

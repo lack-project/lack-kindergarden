@@ -15,7 +15,7 @@ class Coder
 
     #[CliCommand('coder:export', 'create a prompt including files')]
     #[CliArgument('files', 'one or more files, glob-expressions', true)]
-    public function coder_prepare(array $argv, #[CliParamDescription("List all files")]bool $list = false): void{
+    public function coder_export(array $argv, #[CliParamDescription("List all files")]bool $list = false): void{
         $filesCog = new FilesInputCog(getcwd(), "files", "Serialized files and content. These files should be considered as input files.");
 
         $files = [];
