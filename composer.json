@@ -27,6 +27,7 @@
             "Lack\\Kindergarden\\": "src"
         },
         "files": [
+            "src/bootstrap.php"
         ]
     },
     "minimum-stability": "dev",

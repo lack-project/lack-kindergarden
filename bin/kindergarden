@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+namespace Lack\bin;
+
+use Lack\Kindergarden\Cli\CliApplication;
+
+
+require __DIR__ . '/../vendor/autoload.php';
+
+
+$cli = CliApplication::getInstance();
+$cli->run($argv);
