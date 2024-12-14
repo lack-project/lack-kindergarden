@@ -4,7 +4,7 @@ namespace Lack\Kindergarden\Cli;
 
 class CliActionNode extends CliGroupNode
 {
-    public ?\Closure $handler = null;
+
     public array $arguments = []; // [['name'=>...,'desc'=>...,'required'=>...],...]
     public array $options = [];
 

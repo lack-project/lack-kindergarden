@@ -1,11 +1,6 @@
-<?php
+# Cli Usage
 
-namespace Lack\Kindergarden\Cli\Coder;
-
-use Lack\Kindergarden\Cli\Attributes\CliArgument;
-use Lack\Kindergarden\Cli\Attributes\CliCommand;
-use Lack\Kindergarden\Cli\Attributes\CliParamDescription;
-
+```php
 class Coder
 {
 
@@ -27,3 +22,16 @@ class Coder
     }
 
 }
+
+
+```
+
+
+## Registering Classes:
+
+```php
+$app = \Lack\Kindergarden\Cli\CliApplication::getInstance();
+$app->node()->group("coder", "Coder commands");
+
+$app->registerClass(\Lack\Kindergarden\Coder\Coder::class);
+```

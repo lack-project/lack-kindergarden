@@ -8,8 +8,8 @@ abstract class AbstractInputCog implements InputCog
 {
 
     public function __construct(
-        private ?string $name,
-        private ?string $instructions = null
+        public ?string $name,
+        public ?string $instructions = null
     )
     {
     }
@@ -43,6 +43,9 @@ abstract class AbstractInputCog implements InputCog
     {
         return $this->instructions;
     }
+
+
+
 
 
 }

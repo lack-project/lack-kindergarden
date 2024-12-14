@@ -13,7 +13,7 @@ class CliGroupNode {
   // [['name'=>...,'short'=>...,'value'=>bool,'desc'=>...],...]
     public array $subNodes = [];
     public bool $interactive = false;
-
+    public ?\Closure $handler = null;
     public CliApplication $app;
 
     public function __construct(CliApplication $app, string|null $name, string $description = '', )
@@ -90,7 +90,7 @@ class CliGroupNode {
         $parsed = $this->parseArgs($args);
 
         // Check required arguments
-        foreach ($this->arguments as $i => $a) {
+        foreach ($this->arguments ?? [] as $i => $a) {
             if ($a['required'] && (!isset($parsed['args'][$i]) || $parsed['args'][$i] === '')) {
                 if ($this->interactive) {
                     $parsed['args'][$i] = $this->prompt("Please provide a value for '{$a['name']}': ");
@@ -122,7 +122,7 @@ class CliGroupNode {
     {
 
         $parsed = ['args' => [], 'opts' => []];
-        $optsDefs = $this->options;
+        $optsDefs = $this->options ?? [];
 
         while ($args) {
             $current = array_shift($args);

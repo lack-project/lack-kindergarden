@@ -1,0 +1,9 @@
+Important Processing instructions: Provided below is the json-encoded structured input data you must evaluate in order to fulfill your task.
+
+The json contains an array with elements. Process each element key with the following instructions:
+
+- name: The name or id of the input data. Use this to identify the data. If asked, use this to refer to the data.
+- data: The actual input data to process
+- schema: The schema of the data. Evaluate the schema to determine how to process the data. Follow instructions provided in the description of the schema.
+- instructions: Additional instructions on how to process the data or what to do with it
+

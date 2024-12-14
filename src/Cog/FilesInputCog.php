@@ -4,6 +4,7 @@ namespace Lack\Kindergarden\Cog;
 
 use Lack\Kindergarden\Chat\Chat;
 use Lack\Kindergarden\Cog\Type\T_InputFile;
+use Lack\Kindergarden\Helper\JsonSchemaGenerator;
 
 class FilesInputCog extends AbstractInputCog
 {
@@ -85,6 +86,23 @@ class FilesInputCog extends AbstractInputCog
         }
     }
 
+
+    public function getData() : array {
+        return [
+            "name" => $this->name,
+            "instructions" => $this->instructions,
+            "data" => $this->files,
+            "schema" => JsonSchemaGenerator::buildSchema(T_InputFile::class)
+        ];
+    }
+
+
+    /**
+     * @return string[]
+     */
+    public function debugGetFileList() : array {
+        return array_map(fn($file) => $file->filename, $this->files);
+    }
 
     public function prepareChat(Chat $chat): void
     {
