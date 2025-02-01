@@ -72,7 +72,6 @@ class FrontmatterFile
     {
         $this->postProcessor = $callback;
     }
-
     public function save(?string $filePath = null): void
     {
         $targetPath = $filePath ?? $this->filePath;
@@ -80,7 +79,8 @@ class FrontmatterFile
             throw new FrontmatterException("No target file path.");
         }
         if ($this->postProcessor) {
-            $this->header = call_user_func($this->postProcessor, $this->header, $targetPath);
+
+           $this->header = call_user_func($this->postProcessor, $this->header, $targetPath);
             if (!is_array($this->header)) {
                 throw new FrontmatterException("PostProcessor must return array.");
             }

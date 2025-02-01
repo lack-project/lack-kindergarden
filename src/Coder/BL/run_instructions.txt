@@ -1,0 +1,3 @@
+Instuctions on how to rewrite the input file contents:
+
+1) See the

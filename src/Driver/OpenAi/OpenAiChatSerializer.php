@@ -16,7 +16,7 @@ class OpenAiChatSerializer implements  ChatSerializer
 
     public float $temperature = 1.0;
 
-    public int|null $maxTokens = 100;
+    public int|null $maxTokens = null;
 
     public bool $stream = false;
 
@@ -33,7 +33,11 @@ class OpenAiChatSerializer implements  ChatSerializer
 
     public function serialize(Chat $chat, ChatRequestDriver $chatRequestDriver): array
     {
-        $isReasoningModel = str_starts_with($this->model, "o1");
+        $isReasoningModel = str_starts_with($this->model, "o");
+
+        if ($isReasoningModel) {
+           // $this->stream = false; // Reasoning models do not support streaming
+        }
 
         $data = [
             'model' => $this->model,

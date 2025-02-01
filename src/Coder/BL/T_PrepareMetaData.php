@@ -16,7 +16,7 @@ class T_PrepareMetaData
      *
      * @var string[]
      */
-    public $files = [];
+    public $inlcudeFiles = [];
 
     /**
      * Full path of each file that should be edited or created.

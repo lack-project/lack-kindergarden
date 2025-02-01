@@ -3,26 +3,49 @@
 namespace Lack\Kindergarden\Cog;
 
 use Lack\Kindergarden\Chat\Chat;
+use Lack\Kindergarden\Cli\MultiLineCliOutput;
 use Lack\Kindergarden\Cog\Type\EndOfStream;
 use Lack\Kindergarden\Cog\Type\StartOfStream;
 use Lack\Kindergarden\Driver\OpenAi\OpenAiRequest;
 
 class DebugInputOutputCog extends AbstractCog
 {
+    // New property to toggle overwrite mode
+    private bool $overwriteMode;
+
+    public function __construct(bool $overwriteMode = true)
+    {
+        $this->overwriteMode = $overwriteMode;
+    }
+
     private function debug_out(string $chunk, string $prefixText, int $maxchars = 150): void
     {
         static $buffer = '';
         static $curChars = 0;
 
-        // Ankommende Daten anhängen
+        static $mulitLineCliOutput = new MultiLineCliOutput(3);
+        // Append incoming data to the buffer
         $buffer .= $chunk;
 
-        // Zeilenweise aus dem Puffer lesen
+
+        // Handle overwrite mode
+        if ($this->overwriteMode) {
+            // Clear the console line and overwrite
+            if (strpos($buffer, "\n") === false)
+                return;
+
+
+            $mulitLineCliOutput->addLine("{$prefixText}" . str_replace("\n", "",$buffer));
+            $buffer = "";
+            return;
+        }
+
+        // Process the buffer line by line
         while (($pos = strpos($buffer, "\n")) !== false) {
             $line = substr($buffer, 0, $pos);
             $buffer = substr($buffer, $pos + 1);
 
-            // Maxchar prüfen und ggf. Zeile umbrechen
+            // Check maxchar and wrap line if necessary
             if ($curChars + strlen($line) > $maxchars && $curChars > 0) {
                 echo "\n{$prefixText}";
                 $curChars = 0;
@@ -31,10 +54,10 @@ class DebugInputOutputCog extends AbstractCog
             }
 
             echo $line . "\n";
-            $curChars = 0; // Neue Zeile -> Zeilenlänge zurücksetzen
+            $curChars = 0; // Reset line length for the new line
         }
 
-        // Verbleibender Teil ohne Newline
+        // Handle remaining content in the buffer without newline
         if (strlen($buffer) > 0) {
             if ($curChars + strlen($buffer) > $maxchars && $curChars > 0) {
                 echo "\n{$prefixText}";

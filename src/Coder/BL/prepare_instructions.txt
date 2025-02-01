@@ -14,6 +14,8 @@ at any cost, but to provide a high-quality output that is useful to the requeste
 
 ## Output structure (Markdown)
 
+Start with a h1 block called "Instructions" and provide a brief overview of the changes requested in the task.
+
 Provide a H2 Section "Files and Classes to Create", which lists all the files and classes that need to be created (if needed).
 Provide a H2 Section "Files and Classes to Modify", which lists all the files and classes that need to be modified (if needed).
 

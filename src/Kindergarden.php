@@ -37,4 +37,15 @@ class Kindergarden
     }
 
 
+    public function getDefaultReasoningModel(): string
+    {
+        return self::DEFAULT_REASONING_MODEL;
+    }
+
+
+    public function getDefaultModel(): string
+    {
+        return self::DEFAULT_MODEL;
+    }
+
 }

@@ -5,26 +5,24 @@ namespace Lack\Kindergarden\Driver\OpenAi;
 class OpenAiClient
 {
 
-    const OPENAI_DEFAULT_MODEL = "gpt-4o";
-    const OPENAI_DEFAULT_REASONING_MODEL = "gpt-o1";
+    const OPENAI_DEFAULT_MODEL = "chatgpt-4o-latest";
+    const OPENAI_DEFAULT_REASONING_MODEL = "o3-mini";
 
 
     private array $requests = [];
     private $multiHandle;
 
     private string $apiKey;
-    private string $defaultModel;
 
-    public function __construct(string $apiKey = null, string $defaultModel = self::OPENAI_DEFAULT_MODEL)
+    public function __construct(string $apiKey = null)
     {
         $this->apiKey = $apiKey;
-        $this->defaultModel = $defaultModel;
         $this->multiHandle = curl_multi_init();
     }
 
-    public function createRequest(string $model = null): OpenAiRequest
+    public function createRequest(string $model): OpenAiRequest
     {
-        return new OpenAiRequest($this->apiKey, $model ?? $this->defaultModel);
+        return new OpenAiRequest($this->apiKey, $model);
     }
 
     public function addRequest(OpenAiRequest $request): void

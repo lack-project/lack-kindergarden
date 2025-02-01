@@ -4,6 +4,8 @@ namespace Lack\Kindergarden\Coder\BL;
 
 use Lack\Kindergarden\Cli\Attributes\CliArgument;
 use Lack\Kindergarden\Cli\Attributes\CliCommand;
+use Lack\Kindergarden\Cli\Attributes\CliParamDescription;
+use Lack\Kindergarden\Cli\CliApplication;
 use Lack\Kindergarden\Cli\ConsoleTrait;
 use Lack\Kindergarden\Cog\ContinueAfterMaxTokensCog;
 use Lack\Kindergarden\Cog\DebugInputOutputCog;
@@ -13,6 +15,7 @@ use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
 use Lack\Kindergarden\Cog\StructuredInputCog;
 use Lack\Kindergarden\CogWerk\CogWerk;
+use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
 
 class CoderPrepare
@@ -22,7 +25,7 @@ class CoderPrepare
 
     #[CliCommand('coder:prepare', 'prepare a new programming task')]
     #[CliArgument('prompt', 'the prompt including files to include', true)]
-    public function run(array $argv) {
+    public function run(array $argv, #[CliParamDescription("Enable Reasoning (costly)")] bool $reasoning = false) {
         $programmingPrompt = $argv;
         $filesCog = new FilesInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
 
@@ -48,7 +51,7 @@ class CoderPrepare
 
         $programmingPrompt = implode(" ", $programmingPrompt);
 
-        $cogwerk = new CogWerk();
+        $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));
@@ -63,6 +66,9 @@ class CoderPrepare
         file_put_contents($outFile, $frontmatter->__toString());
 
         $this->console->success("Task prepared and saved to $outFile");
+        if ($this->console->ask("Run changes? (Y/n)", "y") === "y") {
+            CliApplication::getInstance()->run(["coder", "run", $outFile]);
+        }
     }
 
 

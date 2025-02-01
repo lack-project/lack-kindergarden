@@ -21,10 +21,11 @@ class CogWerk
 
     private OpenAiClient $client;
 
-    public function __construct()
+    public function __construct(protected readonly CogWerkFlavorEnum $flavor = CogWerkFlavorEnum::DEFAULT)
     {
         $this->client = Kindergarden::defaults()->getClient();
     }
+
 
 
     public function getClient(): OpenAiClient
@@ -104,7 +105,14 @@ class CogWerk
         }
         $chatSerializer = new JsonCogToChatSerializer();
 
-        $request = $this->client->createRequest();
+
+        $model = match ($this->flavor) {
+            CogWerkFlavorEnum::DEFAULT => Kindergarden::defaults()->getDefaultModel(),
+            CogWerkFlavorEnum::REASONING => Kindergarden::defaults()->getDefaultReasoningModel()
+        };
+
+        $request = $this->client->createRequest($model);
+
         $chat = $chatSerializer->convert($this->cogs);
         $request->setChat($chat);
 

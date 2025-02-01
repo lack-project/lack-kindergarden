@@ -4,6 +4,7 @@ namespace Lack\Kindergarden\Cog;
 
 use Lack\Kindergarden\Chat\Chat;
 use Lack\Kindergarden\Cog;
+use Lack\Kindergarden\Cog\Type\CogMetaData;
 use Lack\Kindergarden\Cog\Type\EndOfStream;
 use Lack\Kindergarden\Cog\Type\StartOfStream;
 use Lack\Kindergarden\Driver\OpenAi\OpenAiRequest;
@@ -14,7 +15,7 @@ abstract class AbstractCog implements Cog
 
 
 
-    public function getCogMetaData(): ?Cog\Type\CogMetaData
+    public function getCogMetaData(): ?CogMetaData
     {
         return null;
     }
