@@ -6,9 +6,13 @@ use Lack\Kindergarden\Chat\Chat;
 use Lack\Kindergarden\Chat\ChatMessage;
 use Lack\Kindergarden\Chat\ChatMessageRoleEnum;
 use Lack\Kindergarden\Chat\PredictionChatResponseFormat;
+use Lack\Kindergarden\Cog;
+use Lack\Kindergarden\Cog\Type\EndOfStream;
+use Lack\Kindergarden\Cog\Type\StartOfStream;
+use Lack\Kindergarden\Driver\OpenAi\OpenAiRequest;
 use Lack\Kindergarden\OutputCog;
 
-class FileOutputCog implements OutputCog
+class FileOutputCog extends AbstractCog
 {
 
 
@@ -16,20 +20,13 @@ class FileOutputCog implements OutputCog
         public readonly string $rootPath,
         public readonly string $filename,
         public readonly bool $mustExist = true,
-        public readonly string|null $instructions = null)
+        public string|null $instructions = null)
     {
-
     }
 
     public function prepareChat(Chat $chat): void
     {
-        $absolutePath = $this->rootPath . '/' . $this->filename;
-        if ($this->mustExist && !file_exists($absolutePath)) {
-            throw new \Exception("FileOutputCog File: '{$absolutePath}' does not exist (mustExist = true).");
-        }
-        if (file_exists($absolutePath) && !is_writable($absolutePath)) {
-            throw new \Exception("FileOutputCog File: '{$absolutePath}' is not writable.");
-        }
+
         if ( ! file_exists($absolutePath)) {
             $chat->getFirstSystemMessage()->prepend("Your job is to create a file named '{$this->filename}' based on the instructions given. Respond only with the file content.");
         } else {
@@ -43,4 +40,36 @@ class FileOutputCog implements OutputCog
             $chat->setResponseFormat(new PredictionChatResponseFormat($content)); //
         }
     }
+
+    #[\Override]
+    public function getCogMetaData(): ?Cog\Type\CogMetaData
+    {
+        $absolutePath = $this->rootPath . '/' . $this->filename;
+        if ($this->mustExist && !file_exists($absolutePath)) {
+            throw new \Exception("FileOutputCog File: '{$absolutePath}' does not exist (mustExist = true).");
+        }
+        if (file_exists($absolutePath) && !is_writable($absolutePath)) {
+            throw new \Exception("FileOutputCog File: '{$absolutePath}' is not writable.");
+        }
+        $prompt = "Your job is to create a file named '{$this->filename}' based on the instructions given. Respond only with the file content.";
+        if (file_exists($this->rootPath . '/' . $this->filename)) {
+            $prompt = "Your job is to rewrite the content of the file '{$this->filename}' provided based on the instructions given. Respond only with the modified file content.";
+        }
+
+        return new Cog\Type\CogMetaData(
+            systemPrompt: $prompt
+        );
+    }
+
+    public function processChunk(Chat $chat, OpenAiRequest $request, string|StartOfStream|EndOfStream $data, ?callable $next): mixed
+    {
+        $absolutePath = $this->rootPath . '/' . $this->filename;
+        $result = file_put_contents($absolutePath, $data, );
+        if ($result === false) {
+            throw new \Exception("Could not write to file $absolutePath");
+        }
+        return $next($data);
+    }
+
+
 }

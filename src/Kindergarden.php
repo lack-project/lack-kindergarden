@@ -2,12 +2,25 @@
 
 namespace Lack\Kindergarden;
 
+use Lack\Kindergarden\Driver\OpenAi\OpenAiClient;
+
 class Kindergarden
 {
 
-    public static function defaults(string $defaultModel = 'gpt-4o'): Kindergarden
+    const DEFAULT_MODEL = OpenAiClient::OPENAI_DEFAULT_MODEL;
+    const DEFAULT_REASONING_MODEL = OpenAiClient::OPENAI_DEFAULT_REASONING_MODEL;
+
+    private static $apiKeys = [];
+
+    public static function addKey(string $apiKey, string $instance = "default"): void
     {
-        return new Kindergarden($defaultModel);
+        self::$apiKeys = [$instance => $apiKey];
+    }
+
+
+    public static function defaults(string $defaultModel = self::DEFAULT_MODEL): Kindergarden
+    {
+        return new Kindergarden($defaultModel, self::$apiKeys["default"] ?? throw new \Exception("No default api key set"));
     }
 
     public function __construct (string $defaultModel = null, string $apiKey = null)
@@ -18,6 +31,10 @@ class Kindergarden
     }
 
 
+    public function getClient(): OpenAiClient
+    {
+        return new OpenAiClient($this->apiKey, $this->defaultModel);
+    }
 
 
 }

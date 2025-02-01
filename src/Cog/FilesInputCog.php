@@ -3,10 +3,11 @@
 namespace Lack\Kindergarden\Cog;
 
 use Lack\Kindergarden\Chat\Chat;
+use Lack\Kindergarden\Cog\Type\CogMetaData;
 use Lack\Kindergarden\Cog\Type\T_InputFile;
 use Lack\Kindergarden\Helper\JsonSchemaGenerator;
 
-class FilesInputCog extends AbstractInputCog
+class FilesInputCog extends AbstractCog
 {
 
 
@@ -14,10 +15,10 @@ class FilesInputCog extends AbstractInputCog
 
     public function __construct (
         public readonly string $rootPath,
-        string $name = "files",
-        string $instructions = null
+        public string $name = "files",
+        public ?string $instructions = null
     ){
-        parent::__construct($name, $instructions);
+
     }
 
 
@@ -87,13 +88,15 @@ class FilesInputCog extends AbstractInputCog
     }
 
 
-    public function getData() : array {
-        return [
-            "name" => $this->name,
-            "instructions" => $this->instructions,
-            "data" => $this->files,
-            "schema" => JsonSchemaGenerator::buildSchema(T_InputFile::class)
-        ];
+    public function getCogMetaData() : CogMetaData {
+
+        return new CogMetaData(
+            name: $this->name,
+            instructions: $this->instructions,
+            data: $this->files,
+            schema: JsonSchemaGenerator::buildSchema(T_InputFile::class)
+        );
+
     }
 
 
@@ -106,6 +109,6 @@ class FilesInputCog extends AbstractInputCog
 
     public function prepareChat(Chat $chat): void
     {
-        // TODO: Implement prepareChat() method.
+
     }
 }

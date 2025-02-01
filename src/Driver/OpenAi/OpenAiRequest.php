@@ -34,6 +34,11 @@ class OpenAiRequest implements ChatRequestDriver
         return $this;
     }
 
+    public function getChat() : Chat
+    {
+        return $this->chat;
+    }
+
 
     public function enableStreaming(?callable $callback = null): void
     {
@@ -59,6 +64,7 @@ class OpenAiRequest implements ChatRequestDriver
     {
         $this->curlHandle = curl_init('https://api.openai.com/v1/chat/completions');
 
+        $this->chatSerializer->stream = $this->callback !== null;
         $payload = $this->chatSerializer->serialize($this->chat, $this);
 
         $this->headers = [
@@ -81,16 +87,22 @@ class OpenAiRequest implements ChatRequestDriver
         if ($this->chatSerializer->stream && $this->callback) {
             $this->options[CURLOPT_WRITEFUNCTION] = function ($ch, $data) {
                 $lines = explode("\n", $data);
+                //print_r ($lines);
                 foreach ($lines as $line) {
                     if (strpos($line, 'data: ') === 0) {
                         $content = substr($line, 6);
+                        /*
                         if (trim($content) === '[DONE]') {
                             $this->completedNaturally = true;
                             return strlen($data);
                         }
+                        */
                         $decoded = json_decode($content, true);
                         if (isset($decoded['choices'][0]['delta']['content'])) {
                             ($this->callback)($decoded['choices'][0]['delta']['content']);
+                        }
+                        if (isset($decoded['choices'][0]['finish_reason'])) {
+                            $this->completedNaturally = $decoded['choices'][0]['finish_reason'] === 'stop';
                         }
                     }
                 }

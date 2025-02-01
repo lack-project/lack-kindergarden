@@ -16,7 +16,7 @@ class OpenAiChatSerializer implements  ChatSerializer
 
     public float $temperature = 1.0;
 
-    public int|null $maxTokens = null;
+    public int|null $maxTokens = 100;
 
     public bool $stream = false;
 
