@@ -37,6 +37,11 @@ class CliApplication {
         return $this->root;
     }
 
+    /**
+     * @param class-string $class
+     * @return void
+     * @throws \ReflectionException
+     */
     public function registerClass(string $class): void
     {
         if (method_exists($class, '__cli')) {
@@ -152,9 +157,12 @@ class CliApplication {
 
     public function run(array $argv = null): void
     {
-        $argv = $argv ?? $_SERVER['argv'];
+        if ($argv === null) {
+            $argv = $_SERVER['argv'];
+            $this->scriptName = array_shift($argv); // Remove script name
+        }
 
-        $this->scriptName = array_shift($argv); // Remove script name
+
 
         if (empty($argv) || $argv[0] === '-h' || $argv[0] === '--help') {
             $this->printGobalHelp();

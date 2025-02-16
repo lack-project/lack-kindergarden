@@ -17,4 +17,4 @@ if (file_exists($autoload)) {
 }
 
 $cli = CliApplication::getInstance();
-$cli->run($argv);
+$cli->run(null); // Run from ARGV

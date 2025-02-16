@@ -33,7 +33,7 @@ class CreateModifyFileCog extends AbstractCog
             instructions: "This is the original content of the file '{$this->filename}'.",
             data: file_get_contents($this->filename),
 
-            systemPrompt: "Your job is to modify and return the original-file-content of file '{$this->filename}' based on the instructions given. Respond only with the full modified original-file-content content after modifications. There is no limit on output length. So do not worry about the length of the output. Do not wrap the output in any tags, backticks etc.!",
+            systemPrompt: "Your job is to modify and return the original-file-content of file '{$this->filename}' based on the instructions given. Respond only with the full modified original-file-content content after modifications. There is no limit on output length. So do not worry about the length of the output. DO NOT wrap the output in any quotes, tags, backticks etc. (e.g. ```javascript or ```)!",
             userPrompt: $this->userPrompt !== null ? "You should modify the original-file-content according to the following instructions: {$this->userPrompt}" : null
         );
     }
@@ -46,10 +46,16 @@ class CreateModifyFileCog extends AbstractCog
             $this->data .= $data;
         }
 
+        $dirname = dirname($this->filename);
+        if ( ! is_dir($dirname)) {
+            mkdir($dirname, 0777, true);
+        }
+
         if ($data instanceof EndOfStream) {
             if (is_file($this->filename)) {
                 rename($this->filename, $this->filename . ".bak");
             }
+
             file_put_contents($this->filename, $this->data);
         }
 
