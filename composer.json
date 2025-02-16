@@ -17,6 +17,9 @@
         "ext-curl": "*"
 
     },
+    bin: [
+        "bin/kindergarden"
+    ],
 
     "require-dev": {
         "phore/tester": "*",
