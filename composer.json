@@ -17,7 +17,7 @@
         "ext-curl": "*"
 
     },
-    bin: [
+    "bin": [
         "bin/kindergarden"
     ],
 
