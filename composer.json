@@ -26,7 +26,7 @@
         "lack/keystore": "For key-value storage"
     },
     "require-dev": {
-        "phore/tester": "*",
+        "phore/tester": "*"
 
     },
     "autoload": {
