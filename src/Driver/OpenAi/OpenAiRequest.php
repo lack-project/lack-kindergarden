@@ -69,7 +69,7 @@ class OpenAiRequest implements ChatRequestDriver
 
         $this->headers = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $this->apiKey,
+            'Authorization: Bearer ' . trim($this->apiKey),
         ];
 
         $payload = json_encode($payload);
