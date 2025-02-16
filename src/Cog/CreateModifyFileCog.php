@@ -56,6 +56,15 @@ class CreateModifyFileCog extends AbstractCog
                 rename($this->filename, $this->filename . ".bak");
             }
 
+            // Check if file starts with ``` and ends with ``` -> remove first and last line (complete line)
+            if (preg_match('/^```/', $this->data) && preg_match('/```$/', $this->data)) {
+                $lines = explode("\n", $this->data);
+                array_shift($lines);
+                array_pop($lines);
+                $this->data = implode("\n", $lines);
+            }
+
+
             file_put_contents($this->filename, $this->data);
         }
 

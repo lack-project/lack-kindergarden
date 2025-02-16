@@ -62,7 +62,19 @@ class CoderPrepare
         /* @var $frontmatter FrontMatterFormatCog<T_PrepareMetaData> */
         $frontmatter->getHeader()->original_prompt = $programmingPrompt;
 
-        $outFile = $frontmatter->getHeader()->slugName . ".md";
+
+        // Determine next filename prefix
+        $files = glob("kg-*-*.md");
+        $nextNum = 0;
+        foreach ($files as $file) {
+            $parts = explode("-", basename($file));
+            $num = (int) $parts[1];
+            if ($num > $nextNum) {
+                $nextNum = $num;
+            }
+        }
+        $outFile = "kg-" . str_pad($nextNum + 1, 3, "0", STR_PAD_LEFT) . "-" . $frontmatter->getHeader()->slugName . ".md";
+
         file_put_contents($outFile, $frontmatter->__toString());
 
         $this->console->success("Task prepared and saved to $outFile");
