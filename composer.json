@@ -21,6 +21,9 @@
         "bin/kg"
     ],
 
+    "suggest": {
+        "lack/keystore": "For key-value storage"
+    },
     "require-dev": {
         "phore/tester": "*",
         "lack/keystore": "*",

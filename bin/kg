@@ -5,9 +5,16 @@ namespace Lack\bin;
 
 use Lack\Kindergarden\Cli\CliApplication;
 
-
-require __DIR__ . '/../vendor/autoload.php';
-
+$autoload = __DIR__ . '/../vendor/autoload.php';
+$autoloadLib = __DIR__ . '/../../../autoload.php';
+if (file_exists($autoload)) {
+    require $autoload;
+} else if (file_exists($autoloadLib)) {
+    require $autoloadLib;
+} else {
+    echo "Could not find autoload.php\n";
+    exit(1);
+}
 
 $cli = CliApplication::getInstance();
 $cli->run($argv);
