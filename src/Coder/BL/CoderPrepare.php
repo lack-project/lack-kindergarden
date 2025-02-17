@@ -16,11 +16,14 @@ use Lack\Kindergarden\Cog\StringFormatCog;
 use Lack\Kindergarden\Cog\StructuredInputCog;
 use Lack\Kindergarden\CogWerk\CogWerk;
 use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
+use Lack\Kindergarden\ConfigFile\ConfigFile;
+use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
 
 class CoderPrepare
 {
     use ConsoleTrait;
+    use CoderEnvironmentTrait;
     public $missingFiles = [];
 
     #[CliCommand('coder:prepare', 'prepare a new programming task')]
@@ -56,6 +59,12 @@ class CoderPrepare
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));
         $cogwerk->addCog(new StructuredInputCog("programming-prepare-instructions", file_get_contents(__DIR__ . "/prepare_instructions.txt"), "Follow the"));
+
+        foreach ($this->getConfigFileCogs() as $cog) {
+            $cogwerk->addCog($cog);
+        }
+
+
 
         $cogwerk->addCog(new DebugInputOutputCog());
         $frontmatter = $cogwerk->run(new FrontMatterFormatCog(T_PrepareMetaData::class));

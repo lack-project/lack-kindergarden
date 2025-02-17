@@ -17,6 +17,8 @@ use Lack\Kindergarden\Cog\StringFormatCog;
 use Lack\Kindergarden\Cog\StructuredInputCog;
 use Lack\Kindergarden\CogWerk\CogWerk;
 use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
+use Lack\Kindergarden\ConfigFile\ConfigFile;
+use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
 
 class CoderGlob
@@ -28,9 +30,13 @@ class CoderGlob
     #[CliArgument('pattern', 'the prompt including files to include', true)]
     public function run(array $argv, #[CliParamDescription("Enable Reasoning (costly)")] bool $reasoning = false) {
         $path = $argv[0];
-     
+
+
+        $config = new ConfigFile(".kindergarden.yml", T_KG_Config_Trunk::class);
+        print_r($config->getConfig());
+
         print_r (phore_glob($path));
-        
+
     }
 
 

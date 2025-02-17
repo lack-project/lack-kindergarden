@@ -14,11 +14,15 @@ use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
 use Lack\Kindergarden\Cog\StructuredInputCog;
 use Lack\Kindergarden\CogWerk\CogWerk;
+use Lack\Kindergarden\ConfigFile\ConfigFile;
+use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterException;
 
 class CoderRun
 {
     use ConsoleTrait;
+    use CoderEnvironmentTrait;
+
     public $content = null;
     /**
      * @var T_PrepareMetaData|null
@@ -29,6 +33,7 @@ class CoderRun
     #[CliArgument('file', 'The markdown prepare file', true)]
     public function run(array $argv) {
         $file = $argv[0];
+
 
         $this->parseFile(file_get_contents($file) ?? throw new \Exception("Could not read file $file"));
 
@@ -53,6 +58,13 @@ class CoderRun
             $cogwerk = new CogWerk();
             $cogwerk->addCog(new ContinueAfterMaxTokensCog());
             $cogwerk->addCog($filesCog);
+
+            $configEnv = $configFile->getConfig()->environments;
+            foreach ($this->getConfigFileCogs() as $cog) {
+                $cogwerk->addCog($cog);
+            }
+
+
             $cogwerk->addCog(new StructuredInputCog("programming-instructions", file_get_contents(__DIR__ . "/run_instructions.txt"), "Follow this additional instructions."));
             $cogwerk->addCog(new DebugInputOutputCog());
 

@@ -56,6 +56,14 @@ class CliApplication {
             $instance->__set_console($this->console);
         }
 
+        // Parse class options from traits, etc
+        $classOptions = [];
+        foreach ($ref->getProperties() as $prop) {
+            $propAttrs = $prop->getAttributes(CliParamDescription::class);
+            if (!$propAttrs) continue;
+            $cmdMeta = $propAttrs[0]->newInstance();
+            $classOptions[] = ["name" => $prop->getName(), "description" => $cmdMeta->description, "required" => $prop->hasDefaultValue(), "multiple" => false, "type" => $prop->getType()->getName()];
+        }
 
         foreach ($ref->getMethods() as $method) {
             $cmdAttrs = $method->getAttributes(CliCommand::class);
@@ -86,6 +94,9 @@ class CliApplication {
             foreach ($attrAttrs as $attr) {
                 $cmdNode->argument($attr->name, $attr->description, $attr->required, $attr->multiple);
             }
+            foreach ($classOptions as $opt) {
+                $cmdNode->option($opt["name"], '', $opt["type"] !== "bool", $opt["description"], !$opt["required"]);
+            }
             // Automatically determine args/options by method signature
             $params = $method->getParameters();
             foreach ($params as $p) {
@@ -114,7 +125,17 @@ class CliApplication {
 
             }
 
-            $cmdNode->handler(function($cliArgs, $cliOpts) use ($instance, $method) {
+
+
+            $cmdNode->handler(function($cliArgs, $cliOpts) use ($instance, $method, $classOptions) {
+
+                foreach ($classOptions as $opt) {
+                    if ( ! isset($cliOpts[$opt["name"]]) && $opt["required"]) {
+                        throw new CliException("Missing required option --{$opt["name"]}");
+                    }
+                    $instance->{$opt["name"]} = $cliOpts[$opt["name"]] ?? null;
+                }
+
                 $params = $method->getParameters();
                 $finalArgs = [];
                 $argIndex = 0; // for positional args
