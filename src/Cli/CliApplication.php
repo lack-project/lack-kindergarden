@@ -263,29 +263,14 @@ class CliApplication {
 
     private function printCompletion(CliGroupNode $node, array $path): void
     {
-        $currentCommand = implode(' ', array_filter(array_merge($path, [$node->name])));
-        echo $currentCommand . "\n";
-
-        if (property_exists($node, 'options') && is_array($node->options) && count($node->options) > 0) {
-            foreach ($node->options as $option) {
-                if (!empty($option['short'])) {
-                    echo $currentCommand . " -" . $option['short'] . "\n";
-                }
-                echo $currentCommand . " --" . $option['name'] . "\n";
-            }
-        } else {
-            $prefix = trim($node->name);
-            $matches = glob($prefix . '*');
-            if ($matches) {
-                foreach ($matches as $match) {
-                    echo $match . "\n";
-                }
-            }
-        }
-
-        foreach ($node->subNodes as $subNode) {
-            $this->printCompletion($subNode, array_merge($path, [$node->name]));
-        }
+        array_shift($path);
+        $commandLine = trim(shell_exec('ps -o args= -p $PPID'));
+        file_put_contents('php://stderr', print_r($commandLine, true));
+        $i = count ($_SERVER['argv']);
+        $options = ["a{$i}xxx", "b{$i}xxx", "c{$i}xxx"];
+        $options = array_filter($options, fn($v) => str_starts_with($v, $path[0]));
+        echo implode("\n", $options);
+        //$this->root->printCompletion($path);
     }
 
     private function paramToOptionName(string $paramName): string

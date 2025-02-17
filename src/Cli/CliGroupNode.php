@@ -236,6 +236,24 @@ class CliGroupNode {
        }
     }
 
+    public function printCompletion(array $path): void
+    {
+        file_put_contents('php://stderr', print_R($path, true));
+        $curPath = array_shift($path);
+        if (count ($path) > 0) {
+            if (isset($this->subNodes[$curPath])) {
+                $this->subNodes[$curPath]->printCompletion($path);
+            } else {
+                echo "";
+            }
+        } else {
+            $subNodes = array_keys($this->subNodes);
+            // Filter only commands starting with $curPath
+            $subNodes = array_filter($subNodes, fn($v) => str_starts_with($v, $curPath));
+            echo implode('\n', $subNodes);
+        }
+    }
+
     private function prompt(string $message): string
     {
         echo $message;

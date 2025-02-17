@@ -33,8 +33,8 @@ class CreateModifyFileCog extends AbstractCog
             instructions: "This is the original content of the file '{$this->filename}'.",
             data: file_get_contents($this->filename),
 
-            systemPrompt: "Your job is to modify and return the original-file-content of file '{$this->filename}' based on the instructions given. Respond only with the full modified original-file-content content after modifications. There is no limit on output length. So do not worry about the length of the output. DO NOT wrap the output in any quotes, tags, backticks etc. (e.g. ```javascript or ```)!",
-            userPrompt: $this->userPrompt !== null ? "You should modify the original-file-content according to the following instructions: {$this->userPrompt}" : null
+            systemPrompt: "Your job is to modify and return the original-file-content of file '{$this->filename}' based on the instructions given. Respond only with the full modified original-file-content content after modifications. Do not remove any content or alter the content in any way unless specified in the prompt! There is no limit on output length. So do not worry about the length of the output. DO NOT wrap the output in any quotes, tags, backticks etc. (e.g. ```javascript or ```)!",
+            userPrompt: $this->userPrompt !== null ? "Return the full original-file-content byte by byte as it is, unless changes are explicitly stated below!\nYour job is to modify the original-file-content according to the following instructions:\n\n {$this->userPrompt}" : null
         );
     }
 
