@@ -48,7 +48,6 @@ class CliApplication {
             $class::__cli($this->root);
         }
 
-
         $ref = new \ReflectionClass($class);
         $instance = $ref->newInstance();
 
@@ -62,7 +61,7 @@ class CliApplication {
             $propAttrs = $prop->getAttributes(CliParamDescription::class);
             if (!$propAttrs) continue;
             $cmdMeta = $propAttrs[0]->newInstance();
-            $classOptions[] = ["name" => $prop->getName(), "description" => $cmdMeta->description, "required" => $prop->hasDefaultValue(), "multiple" => false, "type" => $prop->getType()->getName()];
+            $classOptions[] = ["name" => $prop->getName(), "description" => $cmdMeta->description, "required" => ! $prop->hasDefaultValue(), "multiple" => false, "type" => $prop->getType()->getName()];
         }
 
         foreach ($ref->getMethods() as $method) {
@@ -73,9 +72,6 @@ class CliApplication {
             $cmdMeta = $cmdAttrs[0]->newInstance();
             $path = explode(':', $cmdMeta->name);
             $node = $this->root;
-
-
-
 
             // Load subnodes
             foreach (array_slice($path, 0, -1) as $p) {
@@ -128,9 +124,8 @@ class CliApplication {
 
 
             $cmdNode->handler(function($cliArgs, $cliOpts) use ($instance, $method, $classOptions) {
-
                 foreach ($classOptions as $opt) {
-                    if ( ! isset($cliOpts[$opt["name"]]) && $opt["required"]) {
+                    if (!isset($cliOpts[$opt["name"]]) && $opt["required"]) {
                         throw new CliException("Missing required option --{$opt["name"]}");
                     }
                     $instance->{$opt["name"]} = $cliOpts[$opt["name"]] ?? null;
@@ -183,8 +178,6 @@ class CliApplication {
             $this->scriptName = array_shift($argv); // Remove script name
         }
 
-
-
         if (empty($argv) || $argv[0] === '-h' || $argv[0] === '--help') {
             $this->printGobalHelp();
             $this->root->printHelp([]);
@@ -203,14 +196,13 @@ class CliApplication {
             }
 
             if ($completion) {
-                $this->printCompletion($this->root, []);
+                $this->printCompletion($this->root, $argv);
                 exit(0);
             }
             $this->console->setVerbosity($verbosity);
 
             $this->root->run($argv, [], $this->debug);
         } catch (CliException $e) {
-
             $this->console->renderException($e);
             exit(1);
         }
@@ -244,7 +236,6 @@ class CliApplication {
                 $stop = true;
             }
         }
-
         return ['opts' => $opts];
     }
 
@@ -272,14 +263,33 @@ class CliApplication {
 
     private function printCompletion(CliGroupNode $node, array $path): void
     {
-        echo implode(':', array_filter([...$path, $node->name])) . "\n";
-        foreach ($node->subNodes as $sub) {
-            $this->printCompletion($sub, [...$path, $node->name]);
+        $currentCommand = implode(' ', array_filter(array_merge($path, [$node->name])));
+        echo $currentCommand . "\n";
+
+        if (property_exists($node, 'options') && is_array($node->options) && count($node->options) > 0) {
+            foreach ($node->options as $option) {
+                if (!empty($option['short'])) {
+                    echo $currentCommand . " -" . $option['short'] . "\n";
+                }
+                echo $currentCommand . " --" . $option['name'] . "\n";
+            }
+        } else {
+            $prefix = trim($node->name);
+            $matches = glob($prefix . '*');
+            if ($matches) {
+                foreach ($matches as $match) {
+                    echo $match . "\n";
+                }
+            }
+        }
+
+        foreach ($node->subNodes as $subNode) {
+            $this->printCompletion($subNode, array_merge($path, [$node->name]));
         }
     }
 
     private function paramToOptionName(string $paramName): string
     {
-        return strtolower(str_replace('_','-',$paramName));
+        return strtolower(str_replace('_', '-', $paramName));
     }
 }

@@ -59,7 +59,7 @@ class CoderRun
             $cogwerk->addCog(new ContinueAfterMaxTokensCog());
             $cogwerk->addCog($filesCog);
 
-            $configEnv = $configFile->getConfig()->environments;
+
             foreach ($this->getConfigFileCogs() as $cog) {
                 $cogwerk->addCog($cog);
             }
