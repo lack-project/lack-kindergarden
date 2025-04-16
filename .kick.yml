@@ -4,6 +4,7 @@ version: 1
 from: "ghcr.io/nfra-project/kickstart-flavor-php:8.3"
 ports:
 packages: ~
+secrets: open_ai
 
 command:
   build:
