@@ -30,16 +30,16 @@ class CoderInit
 
     #[CliCommand('init', 'Create a .kindergarden.yml file')]
     public function run() {
-        if ( ! $this->console->confirm("Create new .kindergarden.yml in cwd?")) {
+        $filename = ".kindergarden.yml";
+        if ( ! $this->console->confirm("Create new $filename in cwd?")) {
             return;
         }
 
-        $file = phore_file(".kindergarden.yml");
-        if ($file->exists()) {
+        if (file_exists($filename)) {
             $this->console->error("File already exists");
             return;
         }
-        $file->set_contents(phore_file(__DIR__ . "/../../../.kindergarden.yml")->get_contents());
+        file_put_contents($filename, file_get_contents(__DIR__ . "/../../../.kindergarden.yml"));
         $this->console->info("Created new .kindergarden.yml file");
 
     }
