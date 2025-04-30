@@ -5,7 +5,7 @@ namespace Lack\Kindergarden\Coder\BL;
 use Lack\Kindergarden\Cli\Attributes\CliArgument;
 use Lack\Kindergarden\Cli\Attributes\CliParamDescription;
 use Lack\Kindergarden\Cog;
-use Lack\Kindergarden\Cog\FilesInputCog;
+use Lack\Kindergarden\Cog\MultiFileInputCog;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 
@@ -48,7 +48,7 @@ trait CoderEnvironmentTrait
         if (isset ($configEnv["coder"])) {
             $coder = $configEnv["coder"];
             foreach ($coder->files as $file) {
-                $curFileCog = new FilesInputCog($configFile->getConfigFilePath(), $file->name, $file->instructions);
+                $curFileCog = new MultiFileInputCog($configFile->getConfigFilePath(), $file->name, $file->instructions);
                 $curFileCog->addFiles($file->include, $files->exclude ?? []);
                 $return[] = $curFileCog;
             }

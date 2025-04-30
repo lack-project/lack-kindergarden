@@ -9,7 +9,8 @@ use Lack\Kindergarden\Cli\CliApplication;
 use Lack\Kindergarden\Cli\ConsoleTrait;
 use Lack\Kindergarden\Cog\ContinueAfterMaxTokensCog;
 use Lack\Kindergarden\Cog\DebugInputOutputCog;
-use Lack\Kindergarden\Cog\FilesInputCog;
+use Lack\Kindergarden\Cog\FileInputCog;
+use Lack\Kindergarden\Cog\MultiFileInputCog;
 use Lack\Kindergarden\Cog\FrontMatterFormatCog;
 use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
@@ -30,7 +31,7 @@ class CoderPrepare
     #[CliArgument('prompt', 'the prompt including files to include', true)]
     public function run(array $argv, #[CliParamDescription("Enable Reasoning (costly)")] bool $reasoning = false) {
         $programmingPrompt = $argv;
-        $filesCog = new FilesInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
+        $filesCog = new MultiFileInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
 
         foreach ($programmingPrompt as $part) {
             if (is_file($part)) {
@@ -58,6 +59,7 @@ class CoderPrepare
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));
+        $cogwerk->addCog(new FileInputCog(__DIR__ . "/example_prepare_output.md", "example_output", "Example markdown to output (excluding headers)"));
         $cogwerk->addCog(new StructuredInputCog("programming-prepare-instructions", file_get_contents(__DIR__ . "/prepare_instructions.txt"), "Follow the"));
 
         foreach ($this->getConfigFileCogs() as $cog) {

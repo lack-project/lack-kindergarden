@@ -10,7 +10,7 @@ use Lack\Kindergarden\Cli\ConsoleTrait;
 use Lack\Kindergarden\Cog\ConsoleOutputCog;
 use Lack\Kindergarden\Cog\ContinueAfterMaxTokensCog;
 use Lack\Kindergarden\Cog\DebugInputOutputCog;
-use Lack\Kindergarden\Cog\FilesInputCog;
+use Lack\Kindergarden\Cog\MultiFileInputCog;
 use Lack\Kindergarden\Cog\FrontMatterFormatCog;
 use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
