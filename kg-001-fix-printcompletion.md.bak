@@ -10,7 +10,6 @@ original_prompt: Repariere die printCompetion-methode. Sie soll für jeden grupp
   current input as filename and complete the filename always if matching filename
   is there
 ---
-
 # Instructions
 
 The goal is to repair the auto-completion method (printCompetion) in the CliApplication so that for every “Gruppenbegriff” (group node) it prints its subterms (i.e. the names of its sub‑nodes) and—for commands that provide options—the available options. The method should traverse the complete group hierarchy in the same way the command controller does. Additionally, if no options are available for the current node, the method should treat the current input as a filename prefix and complete by listing those filenames (using, for example, glob) that match the prefix.
@@ -30,7 +29,7 @@ Below is an outline of the required changes for the file where the method is def
 Modify the printCompletion method to:
 - Traverse each group node just as the controller does.
 - For each group node, output the current “Gruppenbegriff” (i.e. the command or group name) along with its sub-commands (children) and, if available, the option suggestions.
-- If a node does not have any options defined (or if options array is empty), then treat the current input should be interpreted as a filename prefix. Use a file search function (for example, PHP’s `glob()`) with the current input as the prefix and print every matching filename (one per line).
+- If a node does not have any options defined (or if options array is empty), then treat the current node—or the current input token—as a filename prefix. Complete by querying the filesystem (using glob or similar) to list file names starting with that prefix.
 
 ### Changes
 
@@ -43,7 +42,7 @@ Modify the printCompletion method to:
      `<current> -d` and `<current> --debug`
 
 3. **Filename Completion if No Options:**  
-   If the node does not define any options (or if the options array is empty), then assume the current input should be interpreted as a filename prefix. Use a file search function (glob) with the current input as the prefix and print all matching filenames (one per line).
+   If the node does not define any options (or if the options array is empty), then assume the current input should be interpreted as a filename prefix. Use a file search function (for example, PHP’s `glob()`) with the current input as the prefix and print every matching filename (one per line).
 
 4. **Recursion:**  
    For each subgroup (sub-node) in the current node’s `subNodes`, recursively call the printCompletion method. Append the current node’s name to the path for the recursive call.
@@ -80,7 +79,7 @@ function printCompletion(CliGroupNode $node, array $path): void
             }
         }
     }
-
+    
     // Recursively process each sub-node
     foreach ($node->subNodes as $subNode) {
         // Append the current node's name to the path and recurse.
@@ -104,19 +103,4 @@ When the user types a partial command with no options, the output should list:
 
 This implementation ensures a robust autocomplete feature for the CLI tool.
 
-# Abschlussgedicht
-
-Ein Programm im Nebel leise,  
-sucht nach einem Pfad auf seine Weise.  
-Doch stockt es kurz im Dämmerlicht,  
-die Autovervollständigung tut ihre Pflicht.  
-
-Befehlsbaum wächst, verzweigt und klar,  
-Optionen flüstern: „Wir sind da!“  
-Wo nichts mehr bleibt, kein Schalter mehr,  
-da sucht das Skript nach Dateien umher.  
-
-So tanzt es durch das Kommando-Labyrinth,  
-wo jeder Pfad Entscheidung bringt.  
-Nun steht der Abschluss fest im Licht –  
-Die Methode lebt, sie irrt nicht!
+Once you have replaced the old implementation with the modified version, test by running the CLI with the `--complete` option and various partial inputs to ensure that the groups, options, and filename completions work as intended.
