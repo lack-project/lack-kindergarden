@@ -24,10 +24,18 @@ class FileInputCog extends AbstractCog
 
     public function getCogMetaData() : CogMetaData {
 
+        if ( ! file_exists($this->file)) {
+            throw new \Exception("File '$this->file' does not exist. (Defined in FileInputCog name: '$this->name')");
+        }
+        $content = file_get_contents($this->file);
+        if ($content === false) {
+            throw new \Exception("Could not read file '$this->file'");
+        }
+
         return new CogMetaData(
             name: $this->name,
             instructions: $this->instructions,
-            data: phore_file($this->file)->get_contents(),
+            data: $content,
             schema: null
         );
 
