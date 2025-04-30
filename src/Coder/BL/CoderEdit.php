@@ -62,8 +62,8 @@ class CoderEdit
         $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
-        $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of original-file-content and output it. Follow the instructions on how to edit the file: ", $programmingPrompt));
-
+        $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of original-file-content according to user-instructions and output it. You do not omit or abbreviate until explicitly told to. "));
+        $cogwerk->addCog(new StructuredInputCog("user-instructions", $programmingPrompt, "The instructions on how to modify the original-file-content."));
         if (!$nocontext) {
             foreach ($this->getConfigFileCogs() as $cog) {
                 $cogwerk->addCog($cog);
