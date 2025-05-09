@@ -103,3 +103,20 @@ When the user types a partial command with no options, the output should list:
 - If no options exist for that group, any file(s) starting with the input token from the command line.
 
 This implementation ensures a robust autocomplete feature for the CLI tool.
+
+# Abschlussgedicht
+
+Ein Programm im Nebel leise,  
+sucht nach einem Pfad auf seine Weise.  
+Doch stockt es kurz im Dämmerlicht,  
+die Autovervollständigung tut ihre Pflicht.  
+
+Befehlsbaum wächst, verzweigt und klar,  
+Optionen flüstern: „Wir sind da!“  
+Wo nichts mehr bleibt, kein Schalter mehr,  
+da sucht das Skript nach Dateien umher.  
+
+So tanzt es durch das Kommando-Labyrinth,  
+wo jeder Pfad Entscheidung bringt.  
+Nun steht der Abschluss fest im Licht –  
+Die Methode lebt, sie irrt nicht!

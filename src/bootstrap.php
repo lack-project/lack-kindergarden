@@ -3,6 +3,7 @@
 namespace Lack\Kindergarden;
 
 use Lack\Kindergarden\Coder\BL\CoderAsk;
+use Lack\Kindergarden\Coder\BL\CoderEdit;
 use Lack\Kindergarden\Coder\BL\CoderGlob;
 use Lack\Kindergarden\Coder\BL\CoderInit;
 use Lack\Kindergarden\Coder\BL\CoderPrepare;
@@ -17,6 +18,7 @@ $app->registerClass(CoderPrepare::class);
 $app->registerClass(CoderRun::class);
 $app->registerClass(CoderAsk::class);
 $app->registerClass(CoderGlob::class);
+$app->registerClass(CoderEdit::class);
 
 if (class_exists(\Lack\Keystore\KeyStore::class)) {
     \Lack\Kindergarden\Kindergarden::addKey(\Lack\Keystore\KeyStore::Get()->getAccessKey("open_ai"));

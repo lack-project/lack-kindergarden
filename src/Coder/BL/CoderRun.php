@@ -8,7 +8,7 @@ use Lack\Kindergarden\Cli\ConsoleTrait;
 use Lack\Kindergarden\Cog\ContinueAfterMaxTokensCog;
 use Lack\Kindergarden\Cog\CreateModifyFileCog;
 use Lack\Kindergarden\Cog\DebugInputOutputCog;
-use Lack\Kindergarden\Cog\FilesInputCog;
+use Lack\Kindergarden\Cog\MultiFileInputCog;
 use Lack\Kindergarden\Cog\FrontMatterFormatCog;
 use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
@@ -42,15 +42,15 @@ class CoderRun
             $this->console->info("Editing file $file");
 
             // Add the files after each turn
-            $filesCog = new FilesInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
+            $filesCog = new MultiFileInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
 
-            foreach ($this->header->inlcudeFiles as $inlcudeFile) {
+            foreach ($this->header->includeFiles as $inlcudeFile) {
                 if (is_file($inlcudeFile)) {
                     $filesCog->addFile($inlcudeFile);
                 }
             }
 
-            $alreadyModifiedFiles = new FilesInputCog(getcwd(), "already-modified-files", "Already modified files (use these as reference for changes in the current file).");
+            $alreadyModifiedFiles = new MultiFileInputCog(getcwd(), "already-modified-files", "Already modified files (use these as reference for changes in the current file).");
             foreach ($modifiedFiles as $modifiedFile) {
                 $alreadyModifiedFiles->addFile($modifiedFile);
             }

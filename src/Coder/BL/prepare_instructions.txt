@@ -14,20 +14,5 @@ at any cost, but to provide a high-quality output that is useful to the requeste
 
 ## Output structure (Markdown)
 
-Start with a h1 block called "Instructions" and provide a brief overview of the changes requested in the task.
-
-Provide a H2 Section "Files and Classes to Create", which lists all the files and classes that need to be created (if needed).
-Provide a H2 Section "Files and Classes to Modify", which lists all the files and classes that need to be modified (if needed).
-
-Provide a H2 Section "Implemenation Details" which contains the detailed instructions on how to alter the code. Each
-File should have a H3 Section with the file name. Below there is H4 Section with "Objective" which describes the
-goal of the changes. Then there is a H4 Section "Changes" which describes the changes to be made. Changes should contain
-function prototypes, class definitions, and any other necessary information to finalize the changes in the next request.
-Strip code that is not necessary for the changes (like implementation details).
-
-The File with the most significant changes should be first in the list. Assume that the process to finalize the changes
-will be done in the order you provide.
-
-Think from the perspective of a professional developer and think of similar implementations from popular frameworks.
-Suggest widely used design patterns, naming conventions, and features also if not explicitly requested.
+Output should be in markdown format like the example_output but include the frontmatter headers.
 

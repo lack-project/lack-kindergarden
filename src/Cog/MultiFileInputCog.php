@@ -7,7 +7,7 @@ use Lack\Kindergarden\Cog\Type\CogMetaData;
 use Lack\Kindergarden\Cog\Type\T_InputFile;
 use Lack\Kindergarden\Helper\JsonSchemaGenerator;
 
-class FilesInputCog extends AbstractCog
+class MultiFileInputCog extends AbstractCog
 {
 
 

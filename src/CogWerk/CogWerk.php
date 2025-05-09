@@ -117,6 +117,10 @@ class CogWerk
         $request->setChat($chat);
 
         $request->enableStreaming(function($data) use ($request) {
+            // Sanitize the data
+
+            // Convert crLF to LF
+            $data = str_replace("\r\n", "\n", $data);
 
             $this->sendDataToCogs($data, $request);
         });

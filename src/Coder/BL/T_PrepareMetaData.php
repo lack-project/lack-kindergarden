@@ -16,14 +16,14 @@ class T_PrepareMetaData
      *
      * @var string[]
      */
-    public $inlcudeFiles = [];
+    public array $includeFiles = [];
 
     /**
      * Full path of each file that should be edited or created.
      *
      * @var string[]
      */
-    public $editFiles = [];
+    public array $editFiles = [];
 
     /**
      * Leave empty. Will be filled automatically.

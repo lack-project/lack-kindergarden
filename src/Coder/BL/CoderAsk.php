@@ -11,7 +11,7 @@ use Lack\Kindergarden\Cli\ConsoleTrait;
 use Lack\Kindergarden\Cog\ConsoleOutputCog;
 use Lack\Kindergarden\Cog\ContinueAfterMaxTokensCog;
 use Lack\Kindergarden\Cog\DebugInputOutputCog;
-use Lack\Kindergarden\Cog\FilesInputCog;
+use Lack\Kindergarden\Cog\MultiFileInputCog;
 use Lack\Kindergarden\Cog\FrontMatterFormatCog;
 use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
@@ -32,7 +32,7 @@ class CoderAsk
     #[CliArgument('prompt', 'the prompt including files to include', true)]
     public function run(array $argv, #[CliParamDescription("Enable Reasoning (costly)")] bool $reasoning = false) {
         $programmingPrompt = $argv;
-        $filesCog = new FilesInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
+        $filesCog = new MultiFileInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
 
 
         foreach ($programmingPrompt as $part) {

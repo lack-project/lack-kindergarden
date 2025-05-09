@@ -68,6 +68,7 @@ class FileOutputCog extends AbstractCog
     {
         $absolutePath = $this->rootPath . '/' . $this->filename;
         mkdir(dirname($absolutePath), 0777, true);
+
         $result = file_put_contents($absolutePath, $data, );
         if ($result === false) {
             throw new \Exception("Could not write to file $absolutePath");
