@@ -62,8 +62,8 @@ class CoderEdit
         $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
-        $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of original-file-content according to user-instructions and output it. You do not omit or abbreviate until explicitly told to. "));
-        $cogwerk->addCog(new StructuredInputCog("user-instructions", $programmingPrompt, "The instructions on how to modify the original-file-content."));
+        $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of the @original-file-content according to the @user-instructions. You follow the instructions and return the full content of the file.", "Edit the content of @original-file-content according to @user-instructions and output it."));
+        $cogwerk->addCog(new StructuredInputCog("@user-instructions", $programmingPrompt, "The instructions on how to modify the @original-file-content."));
         if (!$nocontext) {
             foreach ($this->getConfigFileCogs() as $cog) {
                 $cogwerk->addCog($cog);
@@ -75,7 +75,16 @@ class CoderEdit
 
 
         $cogwerk->addCog(new DebugInputOutputCog());
-        $cogwerk->run(new CreateModifyFileCog($editFile, "original-file-content", "This is the file to modify."));
+        $cogwerk->run($modifyCog = new CreateModifyFileCog($editFile, "@original-file-content", "This is the file content to modify."));
+
+        sleep (2);
+        $this->console->writeln("File: $editFile");
+        if ( ! $this->console->confirm("Keep changes?", true)) {
+            $this->console->writeln("Changes discarded.");
+            $modifyCog->undo();
+        } else {
+            $modifyCog->keep();
+        }
 
     }
 

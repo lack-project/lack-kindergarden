@@ -29,12 +29,12 @@ class CreateModifyFileCog extends AbstractCog
         }
 
         return new CogMetaData(
-            name: "original-file-content",
+            name: $this->name,
             instructions: "This is the original content of the file '{$this->filename}'.",
             data: file_get_contents($this->filename),
 
-            systemPrompt: "Your job is to modify and return the original-file-content of file '{$this->filename}' based on the instructions given. Respond only with the full modified original-file-content content after modifications. Do not remove any content or alter the content in any way unless specified in the prompt! There is no limit on output length. So do not worry about the length of the output. DO NOT wrap the output in any quotes, tags, backticks etc. (e.g. ```javascript or ```)!",
-            userPrompt: $this->userPrompt !== null ? "Return the full original-file-content byte by byte as it is, unless changes are explicitly stated below!\nYour job is to modify the original-file-content according to the following instructions:\n\n {$this->userPrompt}" : null
+            systemPrompt: "Your job is to modify and return the {$this->name} of file '{$this->filename}' based on the instructions given. Respond only with the full modified {$this->name} content after modifications. Return the original content byte by byte as it where no modifications were made. Do not remove any content or alter the content in any way unless specified in the prompt! There is no limit on output length. So do not worry about the length of the output. DO NOT wrap the output in any quotes, tags, backticks etc. (e.g. ```javascript or ```)!",
+            userPrompt: $this->userPrompt !== null ? "Return the full {$this->name} byte by byte as it is, unless changes are explicitly stated below!\nYour job is to modify the {$this->name} according to the following instructions:\n\n {$this->userPrompt}" : null
         );
     }
 
@@ -69,6 +69,19 @@ class CreateModifyFileCog extends AbstractCog
         }
 
         return $next($data);
+    }
+
+
+    public function undo() {
+        if (file_exists($this->filename . ".bak")) {
+            rename($this->filename . ".bak", $this->filename);
+        }
+    }
+
+    public function keep() {
+        if (file_exists($this->filename . ".bak")) {
+            unlink($this->filename . ".bak");
+        }
     }
 
 

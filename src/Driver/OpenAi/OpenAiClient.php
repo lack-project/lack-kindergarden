@@ -5,7 +5,7 @@ namespace Lack\Kindergarden\Driver\OpenAi;
 class OpenAiClient
 {
 
-    const OPENAI_DEFAULT_MODEL = "chatgpt-4o-latest";
+    const OPENAI_DEFAULT_MODEL = "gpt-4.1-2025-04-14";
     const OPENAI_DEFAULT_REASONING_MODEL = "o3";
 
 
