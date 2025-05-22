@@ -48,7 +48,8 @@ class CreateModifyFileCog extends AbstractCog
 
         $dirname = dirname($this->filename);
         if ( ! is_dir($dirname)) {
-            mkdir($dirname, 0777, true);
+            if ( ! mkdir($dirname, 0777, true))
+                throw new \Exception("Could not create directory '$dirname'");
         }
 
         if ($data instanceof EndOfStream) {
