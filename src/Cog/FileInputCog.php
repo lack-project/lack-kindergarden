@@ -2,12 +2,14 @@
 
 namespace Lack\Kindergarden\Cog;
 
+use http\Client\Curl\User;
 use Lack\Kindergarden\Chat\Chat;
 use Lack\Kindergarden\Cog\Type\CogMetaData;
 use Lack\Kindergarden\Cog\Type\T_InputFile;
+use Lack\Kindergarden\Cog\Type\UserInspectableCog;
 use Lack\Kindergarden\Helper\JsonSchemaGenerator;
 
-class FileInputCog extends AbstractCog
+class FileInputCog extends AbstractCog implements UserInspectableCog
 {
 
 
@@ -44,5 +46,12 @@ class FileInputCog extends AbstractCog
     public function prepareChat(Chat $chat): void
     {
 
+    }
+
+    public function getUserDebugInfo(): string
+    {
+        $ret = "FileInputCog: " . $this->name . "\n";
+        $ret .= "  + " . $this->file . "\n";
+        return $ret;
     }
 }

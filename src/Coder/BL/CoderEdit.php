@@ -71,6 +71,10 @@ class CoderEdit
         }
 
 
+        $fileList = $filesCog->debugGetFileList();
+        foreach ($fileList as $file) {
+            echo "File: $file\n";
+        }
 
 
 

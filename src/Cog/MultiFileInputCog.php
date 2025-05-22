@@ -5,9 +5,10 @@ namespace Lack\Kindergarden\Cog;
 use Lack\Kindergarden\Chat\Chat;
 use Lack\Kindergarden\Cog\Type\CogMetaData;
 use Lack\Kindergarden\Cog\Type\T_InputFile;
+use Lack\Kindergarden\Cog\Type\UserInspectableCog;
 use Lack\Kindergarden\Helper\JsonSchemaGenerator;
 
-class MultiFileInputCog extends AbstractCog
+class MultiFileInputCog extends AbstractCog implements UserInspectableCog
 {
 
 
@@ -47,7 +48,6 @@ class MultiFileInputCog extends AbstractCog
     {
 
         foreach (phore_glob($includeFilters, $excludeFilters) as $filename) {
-            echo "Adding file: $filename\n";
             $this->addFile($filename, null, $includeContent);
         }
     }
@@ -75,5 +75,14 @@ class MultiFileInputCog extends AbstractCog
     public function prepareChat(Chat $chat): void
     {
 
+    }
+
+    public function getUserDebugInfo(): string
+    {
+        $ret =  "\nMultiFileInputCog: {$this->name}\n";
+        foreach ($this->debugGetFileList() as $file) {
+            $ret .= "  + $file\n";
+        }
+        return $ret;
     }
 }

@@ -66,6 +66,7 @@ class CoderPrepare
             $cogwerk->addCog($cog);
         }
 
+        $this->console->info($cogwerk->getUserDebugInfo());
 
 
         $cogwerk->addCog(new DebugInputOutputCog());
@@ -84,6 +85,8 @@ class CoderPrepare
                 $nextNum = $num;
             }
         }
+
+
         $outFile = "kg-" . str_pad($nextNum + 1, 3, "0", STR_PAD_LEFT) . "-" . $frontmatter->getHeader()->slugName . ".md";
 
         file_put_contents($outFile, $frontmatter->__toString());

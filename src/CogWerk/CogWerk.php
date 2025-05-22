@@ -61,6 +61,19 @@ class CogWerk
 
 
 
+    public function getUserDebugInfo(): string
+    {
+        $debugInfo = "";
+        foreach ($this->cogs as $cog) {
+            if ($cog instanceof Cog\Type\UserInspectableCog) {
+                $debugInfo .= $cog->getUserDebugInfo();
+            } else {
+                $debugInfo .= "Cog: " . get_class($cog) . "\n";
+            }
+
+        }
+        return $debugInfo;
+    }
 
 
     private function sendDataToCogs($data, $request) {
