@@ -66,6 +66,7 @@ class CoderAsk
         foreach ($this->getConfigFileCogs() as $cog) {
             $cogwerk->addCog($cog);
         }
+        $this->console->info($cogwerk->getUserDebugInfo());
 
 
         // Output the result to the console
