@@ -7,6 +7,8 @@ class T_KG_Config_File
 
     public string $name;
 
+    public bool $enabled = true;
+    
     /**
      * @var string[]
      */

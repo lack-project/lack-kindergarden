@@ -48,6 +48,9 @@ trait CoderEnvironmentTrait
         if (isset ($configEnv["coder"])) {
             $coder = $configEnv["coder"];
             foreach ($coder->files as $file) {
+                if ($file->enabled === false) {
+                    continue;
+                }
                 $curFileCog = new MultiFileInputCog($configFile->getConfigFilePath(), $file->name, $file->instructions);
                 $curFileCog->addFiles($file->include, $files->exclude ?? []);
                 $return[] = $curFileCog;

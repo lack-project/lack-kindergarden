@@ -71,12 +71,8 @@ class CoderEdit
         }
 
 
-        $fileList = $filesCog->debugGetFileList();
-        foreach ($fileList as $file) {
-            echo "File: $file\n";
-        }
-
-
+        $this->console->info($cogwerk->getUserDebugInfo());
+        
 
         $cogwerk->addCog(new DebugInputOutputCog());
         $cogwerk->run($modifyCog = new CreateModifyFileCog($editFile, "@original-file-content", "This is the file content to modify."));
