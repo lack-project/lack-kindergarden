@@ -14,6 +14,7 @@ use Lack\Kindergarden\Cog\PromptInputCog;
 use Lack\Kindergarden\Cog\StringFormatCog;
 use Lack\Kindergarden\Cog\StructuredInputCog;
 use Lack\Kindergarden\CogWerk\CogWerk;
+use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterException;
@@ -37,6 +38,7 @@ class CoderRun
 
         $this->parseFile(file_get_contents($file) ?? throw new \Exception("Could not read file $file"));
 
+        $modifiedFilesCogs = [];
         $modifiedFiles = [];
         foreach ($this->header->editFiles as $file) {
             $this->console->info("Editing file $file");
@@ -55,7 +57,8 @@ class CoderRun
                 $alreadyModifiedFiles->addFile($modifiedFile);
             }
 
-            $cogwerk = new CogWerk();
+            $cogwerk = new CogWerk(CogWerkFlavorEnum::REASONING);
+            
             $cogwerk->addCog(new ContinueAfterMaxTokensCog());
             $cogwerk->addCog($filesCog);
 
@@ -68,14 +71,26 @@ class CoderRun
             $cogwerk->addCog(new StructuredInputCog("programming-instructions", file_get_contents(__DIR__ . "/run_instructions.txt"), "Follow this additional instructions."));
             $cogwerk->addCog(new DebugInputOutputCog());
 
-            $cogwerk->run(new CreateModifyFileCog($file, "original-file-content", "Follow the instructions provided below for the file $file: " . $this->content));
+            $cogwerk->run($cmfc = new CreateModifyFileCog($file, "original-file-content", "Follow the instructions provided below for the file $file: " . $this->content));
 
+            $modifiedFilesCogs[] = $cmfc;
+            
             $this->console->info("DONE: $file has been modified");
             $modifiedFiles[] = $file;
         }
         $this->console->success("All files have been modified:");
         foreach ($modifiedFiles as $file) {
             $this->console->success($file);
+        }
+        
+        if ($this->console->confirm("Keep the files?", false)) {
+            foreach ($modifiedFilesCogs as $file) {
+                $file->keep();
+            }
+        } else {
+            foreach ($modifiedFilesCogs as $file) {
+                $file->undo();
+            }
         }
     }
 

@@ -29,7 +29,7 @@ class CoderPrepare
 
     #[CliCommand('coder:prepare', 'prepare a new programming task')]
     #[CliArgument('prompt', 'the prompt including files to include', true)]
-    public function run(array $argv, #[CliParamDescription("Enable Reasoning (costly)")] bool $reasoning = false) {
+    public function run(array $argv) {
         $programmingPrompt = $argv;
         $filesCog = new MultiFileInputCog(getcwd(), "files", "Already existing serialized files and content referenced within the programming-prompt.");
 
@@ -55,7 +55,7 @@ class CoderPrepare
 
         $programmingPrompt = implode(" ", $programmingPrompt);
 
-        $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
+        $cogwerk = new CogWerk(CogWerkFlavorEnum::REASONING);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));
