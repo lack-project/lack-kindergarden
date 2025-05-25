@@ -73,6 +73,11 @@ class CreateModifyFileCog extends AbstractCog
     }
 
     public function compare() {
+        if (file_exists($this->filename . ".bak")) {
+            $diff = shell_exec('diff -U0 ' . escapeshellarg($this->filename . ".bak") . ' ' . escapeshellarg($this->filename));
+        } else {
+            $diff = file_get_contents($this->filename);
+        }
         $diff = shell_exec('diff -U0 ' . escapeshellarg($this->filename . ".bak") . ' ' . escapeshellarg($this->filename));
         $lines = explode("\n", $diff);
         $added = count(array_filter($lines, fn($l) => str_starts_with($l, '+') && !str_starts_with($l, '+++')));
