@@ -91,6 +91,10 @@ class CreateModifyFileCog extends AbstractCog
     
     public function debugOutputModifyResult(): string
     {
+        if ( ! file_exists($this->filename . ".bak")) {
+            $lines = count(file($this->filename));
+            return "Succcess: Created [+]$lines lines in new file {$this->filename}\n";
+        }
         $diff = $this->compare();
         $output = "Success: Added [+]{$diff['added']} lines, Removed [-]{$diff['removed']} lines in file {$this->filename}\n";
         return $output;
