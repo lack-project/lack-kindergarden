@@ -72,6 +72,24 @@ class CreateModifyFileCog extends AbstractCog
         return $next($data);
     }
 
+    public function compare() {
+        $diff = shell_exec('diff -U0 ' . escapeshellarg($this->filename . ".bak") . ' ' . escapeshellarg($this->filename));
+        $lines = explode("\n", $diff);
+        $added = count(array_filter($lines, fn($l) => str_starts_with($l, '+') && !str_starts_with($l, '+++')));
+        $removed = count(array_filter($lines, fn($l) => str_starts_with($l, '-') && !str_starts_with($l, '---')));
+        return [
+            'added' => $added,
+            'removed' => $removed,
+            'diff' => $diff
+        ];
+    }
+    
+    public function debugOutputModifyResult(): string
+    {
+        $diff = $this->compare();
+        $output = "Success: Added [+]{$diff['added']} lines, Removed [-]{$diff['removed']} lines in file {$this->filename}\n";
+        return $output;
+    }
 
     public function undo() {
         if (file_exists($this->filename . ".bak")) {

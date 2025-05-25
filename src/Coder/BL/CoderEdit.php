@@ -77,6 +77,8 @@ class CoderEdit
         $cogwerk->addCog(new DebugInputOutputCog());
         $cogwerk->run($modifyCog = new CreateModifyFileCog($editFile, "@original-file-content", "This is the file content to modify."));
 
+        $this->console->success($modifyCog->debugOutputModifyResult());
+        
         sleep (2);
         $this->console->writeln("File: $editFile");
         if ( ! $this->console->confirm("Keep changes?", true)) {
