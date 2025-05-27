@@ -57,7 +57,7 @@ class CoderRun
                 $alreadyModifiedFiles->addFile($modifiedFile);
             }
 
-            $cogwerk = new CogWerk(CogWerkFlavorEnum::REASONING);
+            $cogwerk = new CogWerk(CogWerkFlavorEnum::DEFAULT);
             
             $cogwerk->addCog(new ContinueAfterMaxTokensCog());
             $cogwerk->addCog($filesCog);
@@ -83,7 +83,7 @@ class CoderRun
             $this->console->success($file);
         }
         
-        if ($this->console->confirm("Keep the files?", false)) {
+        if ($this->console->confirm("Keep the files?", true)) {
             foreach ($modifiedFilesCogs as $file) {
                 $file->keep();
             }
