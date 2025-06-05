@@ -61,7 +61,6 @@ class CoderEdit
         $programmingPrompt = implode(" ", $programmingPrompt);
 
         $cogwerk = new CogWerk($reasoning ? Model::DEFAULT_REASONING_MODEL : Model::DEFAULT_MODEL);
-        $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of the @original-file-content according to the @user-instructions. You follow the instructions and return the full content of the file.", "Edit the content of @original-file-content according to @user-instructions and output it."));
         $cogwerk->addCog(new StructuredInputCog("@user-instructions", $programmingPrompt, "The instructions on how to modify the @original-file-content."));
