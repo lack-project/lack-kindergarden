@@ -1,5 +1,6 @@
 .idea
 composer.lock
-demo/openai-key.txt
+demo2/openai-key.txt
 vendor/
 .keystore.yml
+demo2/
