@@ -4,6 +4,7 @@ environments:
     coder:
         files:
             - name: "project files"
+              enabled: false
               include:
                   - "./composer.json"
                   - "./.editorconfig"

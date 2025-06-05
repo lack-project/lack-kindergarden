@@ -18,6 +18,7 @@ use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterException;
+use Lack\Kindergarden\Models\Model;
 
 class CoderRun
 {
@@ -57,8 +58,8 @@ class CoderRun
                 $alreadyModifiedFiles->addFile($modifiedFile);
             }
 
-            $cogwerk = new CogWerk(CogWerkFlavorEnum::DEFAULT);
-            
+            $cogwerk = new CogWerk(Model::DEFAULT_MODEL);
+
             $cogwerk->addCog(new ContinueAfterMaxTokensCog());
             $cogwerk->addCog($filesCog);
 
@@ -74,7 +75,7 @@ class CoderRun
             $cogwerk->run($cmfc = new CreateModifyFileCog($file, "original-file-content", "Follow the instructions provided below for the file $file: " . $this->content));
 
             $modifiedFilesCogs[] = $cmfc;
-            
+
             $this->console->info("DONE: $file has been modified");
             $modifiedFiles[] = $file;
         }
@@ -82,7 +83,7 @@ class CoderRun
         foreach ($modifiedFiles as $file) {
             $this->console->success($file);
         }
-        
+
         if ($this->console->confirm("Keep the files?", true)) {
             foreach ($modifiedFilesCogs as $file) {
                 $file->keep();

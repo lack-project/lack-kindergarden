@@ -20,6 +20,7 @@ use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
+use Lack\Kindergarden\Models\Model;
 
 class CoderPrepare
 {
@@ -55,7 +56,7 @@ class CoderPrepare
 
         $programmingPrompt = implode(" ", $programmingPrompt);
 
-        $cogwerk = new CogWerk(CogWerkFlavorEnum::REASONING);
+        $cogwerk = new CogWerk(Model::DEFAULT_REASONING_MODEL);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));

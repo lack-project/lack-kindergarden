@@ -21,6 +21,7 @@ use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
+use Lack\Kindergarden\Models\Model;
 
 class CoderEdit
 {
@@ -59,7 +60,7 @@ class CoderEdit
 
         $programmingPrompt = implode(" ", $programmingPrompt);
 
-        $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
+        $cogwerk = new CogWerk($reasoning ? Model::DEFAULT_REASONING_MODEL : Model::DEFAULT_MODEL);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to modify the content of the @original-file-content according to the @user-instructions. You follow the instructions and return the full content of the file.", "Edit the content of @original-file-content according to @user-instructions and output it."));
@@ -72,13 +73,13 @@ class CoderEdit
 
 
         $this->console->info($cogwerk->getUserDebugInfo());
-        
+
 
         $cogwerk->addCog(new DebugInputOutputCog());
         $cogwerk->run($modifyCog = new CreateModifyFileCog($editFile, "@original-file-content", "This is the file content to modify."));
 
         $this->console->success($modifyCog->debugOutputModifyResult());
-        
+
         sleep (2);
         $this->console->writeln("File: $editFile");
         if ( ! $this->console->confirm("Keep changes?", true)) {

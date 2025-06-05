@@ -21,6 +21,7 @@ use Lack\Kindergarden\CogWerk\CogWerkFlavorEnum;
 use Lack\Kindergarden\ConfigFile\ConfigFile;
 use Lack\Kindergarden\ConfigFile\Type\T_KG_Config_Trunk;
 use Lack\Kindergarden\Helper\Frontmatter\FrontmatterFile;
+use Lack\Kindergarden\Models\Model;
 
 class CoderAsk
 {
@@ -57,7 +58,7 @@ class CoderAsk
 
         $programmingPrompt = implode(" ", $programmingPrompt);
 
-        $cogwerk = new CogWerk($reasoning ? CogWerkFlavorEnum::REASONING : CogWerkFlavorEnum::DEFAULT);
+        $cogwerk = new CogWerk($reasoning ? Model::DEFAULT_REASONING_MODEL : Model::DEFAULT_MODEL);
         $cogwerk->addCog(new ContinueAfterMaxTokensCog());
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to answer the following question about the files provided.", $programmingPrompt));

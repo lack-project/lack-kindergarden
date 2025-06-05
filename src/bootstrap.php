@@ -21,7 +21,7 @@ $app->registerClass(CoderGlob::class);
 $app->registerClass(CoderEdit::class);
 
 if (class_exists(\Lack\Keystore\KeyStore::class)) {
-    \Lack\Kindergarden\Kindergarden::addKey(\Lack\Keystore\KeyStore::Get()->getAccessKey("open_ai"));
+    \Lack\Kindergarden\Kindergarden::addKey("open_ai", \Lack\Keystore\KeyStore::Get()->getAccessKey("open_ai"));
 } elseif (getenv("OPENAI_API_KEY") !== false) {
     \Lack\Kindergarden\Kindergarden::addKey("open_ai", getenv("OPENAI_API_KEY"));
 } else {

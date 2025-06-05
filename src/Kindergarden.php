@@ -3,49 +3,41 @@
 namespace Lack\Kindergarden;
 
 use Lack\Kindergarden\Driver\OpenAi\OpenAiClient;
+use Lack\Kindergarden\Models\Model;
 
 class Kindergarden
 {
 
-    const DEFAULT_MODEL = OpenAiClient::OPENAI_DEFAULT_MODEL;
-    const DEFAULT_REASONING_MODEL = OpenAiClient::OPENAI_DEFAULT_REASONING_MODEL;
 
-    private static $apiKeys = [];
+    private static $apiKeys = [
+        "openai" => null,
+        "anthropic" => null,
+    ];
 
-    public static function addKey(string $apiKey, string $instance = "default"): void
+    public static function addKey(string $provider, string $apiKey): void
     {
-        self::$apiKeys = [$instance => $apiKey];
+        self::$apiKeys[$provider] = $apiKey;
     }
 
 
-    public static function defaults(string $defaultModel = self::DEFAULT_MODEL): Kindergarden
+    public static function getKey(string $provider): ?string
     {
-        return new Kindergarden($defaultModel, self::$apiKeys["default"] ?? throw new \Exception("No default api key set"));
-    }
-
-    public function __construct (string $defaultModel = null, string $apiKey = null)
-    {
-        $this->defaultModel = $defaultModel;
-        $this->apiKey = $apiKey;
-
+        return self::$apiKeys[$provider] ?? throw new \Exception("API key for provider '$provider' not found.");
     }
 
 
-    public function getClient(): OpenAiClient
+    public static function defaults(): Kindergarden
     {
-        return new OpenAiClient($this->apiKey, $this->defaultModel);
+        return new Kindergarden();
     }
 
 
-    public function getDefaultReasoningModel(): string
+
+    public function __construct ()
     {
-        return self::DEFAULT_REASONING_MODEL;
+
     }
 
 
-    public function getDefaultModel(): string
-    {
-        return self::DEFAULT_MODEL;
-    }
 
 }
