@@ -21,8 +21,8 @@ enum Model: string
     public function getHandler() : ModelHandler
     {
         return match ($this) {
-            self::DEFAULT_MODEL => new ModelHandler("gpt-4.1-2025-04-14", provider: "open_ai"),
-            self::DEFAULT_REASONING_MODEL => new ModelHandler("o3-2025-04-16", provider: "open_ai"),
+            self::DEFAULT_MODEL => new ModelHandler("gpt-5-2025-08-07", provider: "open_ai"),
+            self::DEFAULT_REASONING_MODEL => new ModelHandler("gpt-5-2025-08-07", provider: "open_ai"),
             self::GPT_O3_CURRENT,
             self::GPT_O3,
             self::GPT_4O_2024_08_06,

@@ -48,7 +48,9 @@ class OpenAiChatSerializer implements  ChatSerializer
         if ($isReasoningModel) {
             $data["max_completion_tokens"] = $this->maxTokens;
         } else {
-            $data["max_tokens"] = $this->maxTokens;
+            if ($this->maxTokens !== null) {
+                $data["max_tokens"] = $this->maxTokens;
+            }
             $data["temperature"] = $this->temperature;
         }
 
