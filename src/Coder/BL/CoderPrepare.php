@@ -77,7 +77,7 @@ class CoderPrepare
 
 
         // Determine next filename prefix
-        $files = glob("kg-*-*.md");
+        $files = glob(".kg-tasks/*-*.md");
         $nextNum = 0;
         foreach ($files as $file) {
             $parts = explode("-", basename($file));
@@ -87,8 +87,12 @@ class CoderPrepare
             }
         }
 
+        if ( ! is_dir(".kg-tasks") ) {
+            $this->console->info("Creating directory .kg-tasks");
+            mkdir(".kg-tasks", 0755, true);
+        }
 
-        $outFile = "kg-" . str_pad($nextNum + 1, 3, "0", STR_PAD_LEFT) . "-" . $frontmatter->getHeader()->slugName . ".md";
+        $outFile = ".kg-tasks/" . str_pad($nextNum + 1, 3, "0", STR_PAD_LEFT) . "-" . $frontmatter->getHeader()->slugName . ".md";
 
         file_put_contents($outFile, $frontmatter->__toString());
 
