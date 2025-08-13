@@ -81,7 +81,7 @@ class CoderPrepare
         $nextNum = 0;
         foreach ($files as $file) {
             $parts = explode("-", basename($file));
-            $num = (int) $parts[1];
+            $num = (int) $parts[0];
             if ($num > $nextNum) {
                 $nextNum = $num;
             }
