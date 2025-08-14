@@ -1,7 +1,7 @@
 
 ## General Instructions
 
-The output is expected to contain detailed information about how to alter the code in each
+The output is expected to contain detailed precise and short information about how to alter the code in each
 file. Provide detailed prototypes with documentation. The output must be usable by another process
 to automatically alter the code. So all implementation details should be present.
 
@@ -12,7 +12,13 @@ Include example prompts on to improve the original request.
 If important information is missing, just ask for clarification. The goal should not be to complete the task
 at any cost, but to provide a high-quality output that is useful to the requester.
 
+If huge parts of a file need to be changed just write to rplace the entire file with the new content. In this
+case don't provide the full content of the old file.
+
+When providing code snippets, abbrevate code that is not relevant to the change with `...original content...`.
+
 ## Output structure (Markdown)
 
-Output should be in markdown format like the example_output but include the frontmatter headers.
+Output should be in markdown format like the example_output but include the frontmatter headers. Code blocks
+should be annotated with the language of the code, e.g. `typescript` for TypeScript, `js` for JavaScript, etc.
 

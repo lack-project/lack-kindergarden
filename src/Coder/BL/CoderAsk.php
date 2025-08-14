@@ -59,7 +59,7 @@ class CoderAsk
         $programmingPrompt = implode(" ", $programmingPrompt);
 
         $cogwerk = new CogWerk($reasoning ? Model::DEFAULT_REASONING_MODEL : Model::DEFAULT_MODEL);
-        $cogwerk->addCog(new ContinueAfterMaxTokensCog());
+        //$cogwerk->addCog(new ContinueAfterMaxTokensCog()); Not needed anymore
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to answer the following question about the files provided.", $programmingPrompt));
 

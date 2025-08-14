@@ -57,7 +57,7 @@ class CoderPrepare
         $programmingPrompt = implode(" ", $programmingPrompt);
 
         $cogwerk = new CogWerk(Model::DEFAULT_REASONING_MODEL);
-        $cogwerk->addCog(new ContinueAfterMaxTokensCog());
+        //$cogwerk->addCog(new ContinueAfterMaxTokensCog()); Not needed anymore
         $cogwerk->addCog($filesCog);
         $cogwerk->addCog(new PromptInputCog("Your job is to plan / prepare the task provided as user-prompt. Follow the guides provided as programming-prepare-instructions.", $programmingPrompt));
         $cogwerk->addCog(new FileInputCog(__DIR__ . "/example_prepare_output.md", "example_output", "Example markdown to output (excluding headers)"));

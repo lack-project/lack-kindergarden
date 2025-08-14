@@ -52,7 +52,8 @@ trait CoderEnvironmentTrait
                     continue;
                 }
                 $curFileCog = new MultiFileInputCog($configFile->getConfigFilePath(), $file->name, $file->instructions);
-                $curFileCog->addFiles($file->include, $files->exclude ?? []);
+                print_r ($file->exclude);
+                $curFileCog->addFiles($file->include, $file->exclude ?? []);
                 $return[] = $curFileCog;
             }
         }
